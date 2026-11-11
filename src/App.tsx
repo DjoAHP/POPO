@@ -5,6 +5,7 @@ import SearchPage from "./features/search/SearchPage";
 import CollectionPage from "./features/collection/CollectionPage";
 import WishlistPage from "./features/wishlist/WishlistPage";
 import SetsPage from "./features/sets/SetsPage";
+import SearchTestPage from "./features/search/SearchTestPage";
 
 /**
  * Routage de l'application. Les URLs sont en français pour rester cohérents
@@ -19,6 +20,8 @@ export default function App() {
         <Route path="collection" element={<CollectionPage />} />
         <Route path="wishlist" element={<WishlistPage />} />
         <Route path="sets" element={<SetsPage />} />
+        {/* Page de test de la phase 1 — temporaire, hors navigation */}
+        <Route path="test" element={<SearchTestPage />} />
       </Route>
     </Routes>
   );
