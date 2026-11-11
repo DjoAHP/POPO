@@ -1,11 +1,15 @@
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, Bookmark, Library } from "lucide-react";
+import { useLiveQuery } from "dexie-react-hooks";
+import { ArrowLeft } from "lucide-react";
+import { db } from "../../db/database";
+import { formatEur } from "../../lib/format";
 import { CardImage } from "../../components/CardImage";
 import { extractPrices } from "../../api/tcgdex";
 import { useCard, useExchangeRate } from "../../api/queries";
 import { PriceCompare } from "./PriceCompare";
 import { PokemonSection } from "./PokemonSection";
+import { CardActions } from "./CardActions";
 import { t } from "../../i18n";
 
 /**
@@ -47,19 +51,7 @@ export default function CardPage() {
         </div>
       )}
 
-      {card.isError && (
-        <div className="rounded-standard border border-line bg-surface p-6 text-center">
-          <p className="font-medium">{t.card.notFoundTitle}</p>
-          <p className="mt-1 text-sm text-ink-muted">{t.card.notFoundText}</p>
-          <button
-            type="button"
-            onClick={() => void card.refetch()}
-            className="mt-4 inline-flex h-11 items-center rounded-standard border border-line px-4 text-sm hover:bg-surface-2"
-          >
-            {t.search.retry}
-          </button>
-        </div>
-      )}
+      {card.isError && <CardErrorState cardId={cardId} onRetry={() => void card.refetch()} />}
 
       {card.data && <CardDetail card={card.data} rate={exchange.rate} rateSource={exchange.source} />}
     </div>
@@ -67,6 +59,77 @@ export default function CardPage() {
 }
 
 type Card = NonNullable<ReturnType<typeof useCard>["data"]>;
+
+/**
+ * État d'erreur de la fiche carte.
+ * Deux cas bien distincts : hors ligne (internet manquant) et carte
+ * réellement introuvable. Si la carte est dans la collection ou la wishlist,
+ * on affiche son APERÇU LOCAL (instantané enregistré) plutôt que rien :
+ * l'utilisateur voit au moins ce qu'il possède, même sans réseau.
+ */
+function CardErrorState({ cardId, onRetry }: { cardId: string | null; onRetry: () => void }) {
+  const localItem = useLiveQuery(
+    async () => {
+      if (!cardId) return null;
+      return (await db.collection.get(cardId)) ?? (await db.wishlist.get(cardId)) ?? null;
+    },
+    [cardId],
+  );
+
+  const offline = typeof navigator !== "undefined" && !navigator.onLine;
+  const snapshot = localItem?.snapshot ?? null;
+
+  return (
+    <div>
+      <div className="rounded-standard border border-line bg-surface p-6 text-center">
+        <p className="font-medium">{offline ? t.card.offlineTitle : t.card.notFoundTitle}</p>
+        <p className="mt-1 text-sm text-ink-muted">
+          {offline ? t.card.offlineText : t.card.notFoundText}
+        </p>
+        <div className="mt-4 flex flex-wrap justify-center gap-2">
+          <button
+            type="button"
+            onClick={onRetry}
+            className="inline-flex h-11 items-center rounded-standard border border-line px-4 text-sm hover:bg-surface-2"
+          >
+            {t.search.retry}
+          </button>
+          {offline && (
+            <Link
+              to="/collection"
+              className="inline-flex h-11 items-center rounded-standard bg-accent px-4 text-sm font-medium text-accent-ink hover:opacity-90"
+            >
+              {t.card.seeCollection}
+            </Link>
+          )}
+        </div>
+      </div>
+
+      {snapshot && (
+        <section className="mt-4 rounded-standard border border-line bg-surface p-4">
+          <h2 className="text-xs font-medium text-ink-muted">{t.card.localPreviewTitle}</h2>
+          <div className="mt-3 flex gap-4">
+            <div className="w-24 shrink-0">
+              <CardImage image={snapshot.image} name={snapshot.name} />
+            </div>
+            <div className="min-w-0">
+              <p className="font-medium">{snapshot.name}</p>
+              <p className="text-xs text-ink-muted">
+                {snapshot.setName}
+                {snapshot.localId ? ` · n° ${snapshot.localId}` : ""}
+                {snapshot.rarity ? ` · ${snapshot.rarity}` : ""}
+              </p>
+              <p className="mt-2 text-sm">
+                {snapshot.price ? formatEur(snapshot.price.eur) : t.card.priceUnavailable}
+              </p>
+              <p className="mt-1 text-xs text-ink-muted">{t.card.localPreviewNote}</p>
+            </div>
+          </div>
+        </section>
+      )}
+    </div>
+  );
+}
 
 function CardDetail({ card, rate, rateSource }: { card: Card; rate: number; rateSource: "live" | "fallback" }) {
   const prices = extractPrices(card);
@@ -93,27 +156,8 @@ function CardDetail({ card, rate, rateSource }: { card: Card; rate: number; rate
             <PriceCompare prices={prices} rate={rate} rateSource={rateSource} />
           </div>
 
-          {/* 3. Actions — présentes, branchées à la phase 3 */}
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              disabled
-              title={t.card.actionSoon}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-standard bg-accent px-4 text-sm font-medium text-accent-ink opacity-50"
-            >
-              <Library className="h-4 w-4" aria-hidden="true" />
-              {t.card.addToCollection}
-            </button>
-            <button
-              type="button"
-              disabled
-              title={t.card.actionSoon}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-standard border border-line bg-surface px-4 text-sm font-medium text-ink-muted opacity-50"
-            >
-              <Bookmark className="h-4 w-4" aria-hidden="true" />
-              {t.card.addToWishlist}
-            </button>
-          </div>
+          {/* 3. Actions, branchées sur la base locale (Dexie) */}
+          <CardActions card={card} rate={rate} />
         </div>
       </div>
 

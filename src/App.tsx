@@ -6,6 +6,7 @@ import CollectionPage from "./features/collection/CollectionPage";
 import WishlistPage from "./features/wishlist/WishlistPage";
 import SetsPage from "./features/sets/SetsPage";
 import CardPage from "./features/card/CardPage";
+import SettingsPage from "./features/settings/SettingsPage";
 
 /**
  * Routage de l'application. Les URLs sont en français pour rester cohérents
@@ -22,6 +23,8 @@ export default function App() {
         <Route path="sets" element={<SetsPage />} />
         {/* Fiche carte : /carte/{id TCGdex} */}
         <Route path="carte/:id" element={<CardPage />} />
+        {/* Réglages : thème, export/import */}
+        <Route path="reglages" element={<SettingsPage />} />
       </Route>
     </Routes>
   );

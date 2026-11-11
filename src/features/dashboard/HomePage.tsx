@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { BarChart3, Search } from "lucide-react";
+import { BarChart3, Search, Settings } from "lucide-react";
 import { PageHeader } from "../../components/PageHeader";
 import { EmptyState } from "../../components/EmptyState";
 import { ThemeToggle } from "../../components/ThemeToggle";
@@ -14,7 +14,22 @@ import { t } from "../../i18n";
 export default function HomePage() {
   return (
     <div>
-      <PageHeader title={t.home.title} action={<ThemeToggle />} />
+      <PageHeader
+        title={t.home.title}
+        action={
+          <div className="flex gap-2">
+            <ThemeToggle />
+            <Link
+              to="/reglages"
+              aria-label={t.settings.title}
+              title={t.settings.title}
+              className="flex h-11 w-11 items-center justify-center rounded-standard border border-line bg-surface text-ink-muted transition-colors hover:bg-surface-2 hover:text-ink"
+            >
+              <Settings className="h-5 w-5" aria-hidden="true" />
+            </Link>
+          </div>
+        }
+      />
 
       {/* Bloc d'identité */}
       <section className="mb-6 flex flex-col items-center rounded-standard border border-line bg-surface px-6 py-10 text-center">

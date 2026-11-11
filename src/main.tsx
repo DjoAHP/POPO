@@ -14,7 +14,11 @@ registerSW({ immediate: true });
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 2,
+      // Hors ligne, inutile de réessayer : on affiche tout de suite l'état
+      // d'erreur honnête (message « Tu es hors ligne ») plutôt que de faire
+      // attendre l'utilisateur pendant les temporisations de réessai.
+      retry: (failureCount) =>
+        typeof navigator !== "undefined" && !navigator.onLine ? false : failureCount < 2,
       refetchOnWindowFocus: false,
       staleTime: 60 * 60 * 1000,
     },

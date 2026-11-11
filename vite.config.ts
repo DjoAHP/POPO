@@ -45,8 +45,31 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ["**/*.{js,css,html,svg,png,woff2}"],
+        globPatterns: ["**/*.{js,css,html,svg,png,webp,woff2}"],
         navigateFallback: "/index.html",
+        // Cache des images distantes : indispensable pour consulter sa
+        // collection hors ligne (les visuels viennent du CDN TCGdex et des
+        // sprites PokéAPI). CacheFirst : une image ne change jamais.
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/assets\.tcgdex\.net\/.*/i,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "tcgdex-images",
+              expiration: { maxEntries: 600, maxAgeSeconds: 30 * 24 * 3600 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            urlPattern: /^https:\/\/raw\.githubusercontent\.com\/PokeAPI\/sprites\/.*/i,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "pokeapi-sprites",
+              expiration: { maxEntries: 300, maxAgeSeconds: 30 * 24 * 3600 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+        ],
       },
     }),
   ],
