@@ -21,6 +21,43 @@ export function searchCards(name: string): Promise<TcgdexCardBrief[]> {
   );
 }
 
+/**
+ * Filtres de recherche (section 4 de la spec : set, rareté, type).
+ * Appliqués CÔTÉ SERVEUR par TCGdex (doc « Filtrage ») : jamais de rafale
+ * de requêtes côté client. `eq:` = égalité stricte, pour que « Rare »
+ * ne ramène pas aussi « Rare Holo ».
+ */
+export interface SearchFilters {
+  /** Id du set, ex. "base1". */
+  set?: string;
+  /** Rareté exacte en français, ex. "Rare". */
+  rarity?: string;
+  /** Type en français, ex. "Feu". */
+  type?: string;
+}
+
+export function searchCardsFiltered(
+  name: string,
+  filters: SearchFilters,
+): Promise<TcgdexCardBrief[]> {
+  const params = new URLSearchParams();
+  params.set("name", name.trim());
+  if (filters.set) params.set("set", `eq:${filters.set}`);
+  if (filters.rarity) params.set("rarity", `eq:${filters.rarity}`);
+  if (filters.type) params.set("types", `eq:${filters.type}`);
+  return fetchJson<TcgdexCardBrief[]>(`${BASE_URL}/cards?${params.toString()}`);
+}
+
+/** Liste officielle des raretés, en français (endpoint /rarities). */
+export function getRarities(): Promise<string[]> {
+  return fetchJson<string[]>(`${BASE_URL}/rarities`);
+}
+
+/** Liste officielle des types, en français (endpoint /types). */
+export function getTypes(): Promise<string[]> {
+  return fetchJson<string[]>(`${BASE_URL}/types`);
+}
+
 /** Détail complet d'une carte. */
 export function getCard(id: string): Promise<TcgdexCard> {
   return fetchJson<TcgdexCard>(`${BASE_URL}/cards/${encodeURIComponent(id)}`);

@@ -3,8 +3,16 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
 
+// Sous WSL avec le projet sur /mnt/c, inotify ne signale pas les
+// modifications de fichiers : le serveur de dev ne voit pas les changements.
+// On active le polling uniquement dans ce cas (Linux), pas sur Windows.
+const onWsl = process.platform === "linux";
+
 // Configuration Vite : React, Tailwind v4 et la PWA (manifeste + service worker).
 export default defineConfig({
+  server: {
+    watch: onWsl ? { usePolling: true, interval: 500 } : undefined,
+  },
   plugins: [
     react(),
     tailwindcss(),

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getCard, getSets, searchCards } from "./tcgdex";
+import { getCard, getRarities, getSets, getTypes, searchCardsFiltered, type SearchFilters } from "./tcgdex";
 import {
   getEvolutionLine,
   getPokemon,
@@ -15,13 +15,41 @@ import { useUsdToEur, type ExchangeRate } from "./exchange";
 const HOUR = 60 * 60 * 1000;
 const DAY = 24 * HOUR;
 
-/** Recherche : les métadonnées de base changent rarement → 24 h. */
-export function useCardSearch(name: string) {
+/**
+ * Recherche avec filtres serveur (set / rareté / type).
+ * La clé de cache inclut les filtres : chaque combinaison a son cache.
+ */
+export function useCardSearch(name: string, filters: SearchFilters = {}) {
   return useQuery({
-    queryKey: ["tcgdex", "search", name],
-    queryFn: () => searchCards(name),
+    queryKey: [
+      "tcgdex",
+      "search",
+      name,
+      filters.set ?? null,
+      filters.rarity ?? null,
+      filters.type ?? null,
+    ],
+    queryFn: () => searchCardsFiltered(name, filters),
     enabled: name.trim().length >= 2,
     staleTime: DAY,
+  });
+}
+
+/** Raretés officielles (français) : quasi statique → 7 jours. */
+export function useRarities() {
+  return useQuery({
+    queryKey: ["tcgdex", "rarities"],
+    queryFn: getRarities,
+    staleTime: 7 * DAY,
+  });
+}
+
+/** Types officiels (français) : quasi statique → 7 jours. */
+export function useTypes() {
+  return useQuery({
+    queryKey: ["tcgdex", "types"],
+    queryFn: getTypes,
+    staleTime: 7 * DAY,
   });
 }
 
