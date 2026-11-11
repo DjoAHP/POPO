@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="fr" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>POPO — Collection Pokémon</title>
+    <meta name="description" content="Recherche de cartes Pokémon, comparaison des prix et collection personnelle, en français." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/pwa-192x192.png" />
+    <meta name="theme-color" content="#0e131d" />
+
+    <!-- Applique le thème mémorisé AVANT le premier rendu, pour éviter tout flash.
+         Le thème sombre est la valeur par défaut (section 6 de la spec). -->
+    <script>
+      try {
+        var theme = localStorage.getItem("popo:theme");
+        document.documentElement.dataset.theme = theme === "light" ? "light" : "dark";
+      } catch (e) {
+        /* localStorage indisponible : on reste en sombre */
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
