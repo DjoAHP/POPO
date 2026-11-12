@@ -168,6 +168,18 @@ export const fr = {
     description: "Les extensions Pokémon et ta progression dans chacune.",
     emptyTitle: "Aucun set",
     emptyText: "La liste des extensions arrivera à la phase 4.",
+    detailTitle: "Set",
+    owned: "Possédées",
+    missing: "Manquantes",
+    progress: (owned: number, total: number) => `${owned} / ${total}`,
+    progressPercent: (pct: number) => `${pct} %`,
+    backToSets: "Sets",
+    cardsOwned: "Possédées",
+    cardsMissing: "Manquantes",
+    allCards: "Toutes les cartes",
+    filterOwned: "Possédées",
+    filterMissing: "Manquantes",
+    noCards: "Aucune carte dans ce set.",
   },
 } as const;
 

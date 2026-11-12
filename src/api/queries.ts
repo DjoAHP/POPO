@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getCard, getRarities, getSets, getTypes, searchCardsFiltered, type SearchFilters } from "./tcgdex";
+import { getCard, getRarities, getSetDetail, getSets, getTypes, searchCardsFiltered, type SearchFilters } from "./tcgdex";
 import {
   getEvolutionLine,
   getPokemon,
@@ -68,6 +68,16 @@ export function useSets() {
   return useQuery({
     queryKey: ["tcgdex", "sets"],
     queryFn: getSets,
+    staleTime: DAY,
+  });
+}
+
+/** Détail d'un set (avec toutes ses cartes) : statique → 24 h. */
+export function useSetDetail(setId: string | null) {
+  return useQuery({
+    queryKey: ["tcgdex", "set", setId],
+    queryFn: () => getSetDetail(setId as string),
+    enabled: setId !== null,
     staleTime: DAY,
   });
 }

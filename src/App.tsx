@@ -5,6 +5,7 @@ import SearchPage from "./features/search/SearchPage";
 import CollectionPage from "./features/collection/CollectionPage";
 import WishlistPage from "./features/wishlist/WishlistPage";
 import SetsPage from "./features/sets/SetsPage";
+import SetDetailPage from "./features/sets/SetDetailPage";
 import CardPage from "./features/card/CardPage";
 import SettingsPage from "./features/settings/SettingsPage";
 
@@ -21,6 +22,7 @@ export default function App() {
         <Route path="collection" element={<CollectionPage />} />
         <Route path="wishlist" element={<WishlistPage />} />
         <Route path="sets" element={<SetsPage />} />
+        <Route path="set/:id" element={<SetDetailPage />} />
         {/* Fiche carte : /carte/{id TCGdex} */}
         <Route path="carte/:id" element={<CardPage />} />
         {/* Réglages : thème, export/import */}

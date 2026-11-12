@@ -3,6 +3,7 @@ import type {
   CardPrices,
   TcgdexCard,
   TcgdexCardBrief,
+  TcgdexSetDetail,
   TcgdexSetListItem,
   TcgdexTcgplayerEntry,
   TcgdexTcgplayerPricing,
@@ -66,6 +67,11 @@ export function getCard(id: string): Promise<TcgdexCard> {
 /** Liste des extensions. */
 export function getSets(): Promise<TcgdexSetListItem[]> {
   return fetchJson<TcgdexSetListItem[]>(`${BASE_URL}/sets`);
+}
+
+/** Détail d'un set avec toutes ses cartes. */
+export function getSetDetail(setId: string): Promise<TcgdexSetDetail> {
+  return fetchJson<TcgdexSetDetail>(`${BASE_URL}/sets/${encodeURIComponent(setId)}`);
 }
 
 /**

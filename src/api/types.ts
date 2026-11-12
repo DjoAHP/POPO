@@ -128,11 +128,32 @@ export interface TcgdexCard extends TcgdexCardBrief {
   pricing?: TcgdexPricing;
 }
 
-/** Liste des sets : /sets (les réponses réelles ne renvoient que id/name/cardCount). */
+/** Liste des sets : /sets (les réponses réelles incluent logo et symbol). */
 export interface TcgdexSetListItem {
   id: string;
   name: string;
   cardCount: TcgdexCardCount;
+  /** URL sans extension pour le logo du set : ajouter "/logo.webp". */
+  logo?: string;
+  /** URL sans extension pour le symbole du set : ajouter "/symbol.webp". */
+  symbol?: string;
+}
+
+/** Détail d'un set : /sets/{id}. Inclut la liste de toutes les cartes. */
+export interface TcgdexSetDetail extends TcgdexSetListItem {
+  cards: TcgdexCardBrief[];
+  /** Compteurs détaillés : firstEd, holo, normal, reverse, total, official. */
+  cardCount: {
+    firstEd: number;
+    holo: number;
+    normal: number;
+    reverse: number;
+    total: number;
+    official: number;
+  };
+  logo?: string;
+  symbol?: string;
+  releaseDate?: string;
 }
 
 /* ============================== PokéAPI ============================== */

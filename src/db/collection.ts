@@ -1,6 +1,8 @@
 import { db } from "./database";
 import type { CardCondition, CardSnapshot, CollectionItem } from "./schema";
 
+export type { CollectionItem };
+
 /** Ajoute une carte à la collection (quantité 1, état Neuf/NM). */
 export async function addToCollection(id: string, snapshot: CardSnapshot): Promise<void> {
   const existing = await db.collection.get(id);
