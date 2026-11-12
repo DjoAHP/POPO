@@ -1,5 +1,7 @@
 import { Route, Routes } from "react-router-dom";
+import { AnimatePresence } from "motion/react";
 import { AppShell } from "./components/AppShell";
+import { PageTransition, ZoomTransition } from "./components/PageTransition";
 import HomePage from "./features/dashboard/HomePage";
 import SearchPage from "./features/search/SearchPage";
 import CollectionPage from "./features/collection/CollectionPage";
@@ -15,19 +17,30 @@ import SettingsPage from "./features/settings/SettingsPage";
  */
 export default function App() {
   return (
-    <Routes>
-      <Route element={<AppShell />}>
-        <Route index element={<HomePage />} />
-        <Route path="recherche" element={<SearchPage />} />
-        <Route path="collection" element={<CollectionPage />} />
-        <Route path="wishlist" element={<WishlistPage />} />
-        <Route path="sets" element={<SetsPage />} />
-        <Route path="set/:id" element={<SetDetailPage />} />
-        {/* Fiche carte : /carte/{id TCGdex} */}
-        <Route path="carte/:id" element={<CardPage />} />
-        {/* Réglages : thème, export/import */}
-        <Route path="reglages" element={<SettingsPage />} />
-      </Route>
-    </Routes>
+    <AnimatePresence mode="wait">
+      <Routes>
+        <Route element={<AppShell />}>
+          <Route index element={<PageTransition><HomePage /></PageTransition>} />
+          <Route path="recherche" element={<PageTransition><SearchPage /></PageTransition>} />
+          <Route path="collection" element={<PageTransition><CollectionPage /></PageTransition>} />
+          <Route path="wishlist" element={<PageTransition><WishlistPage /></PageTransition>} />
+          <Route path="sets" element={<PageTransition><SetsPage /></PageTransition>} />
+          <Route path="set/:id" element={<PageTransition><SetDetailPage /></PageTransition>} />
+          {/* Fiche carte : /carte/{id TCGdex} — zoom transition */}
+          <Route
+            path="carte/:id"
+            element={
+              <PageTransition>
+                <ZoomTransition>
+                  <CardPage />
+                </ZoomTransition>
+              </PageTransition>
+            }
+          />
+          {/* Réglages : thème, export/import */}
+          <Route path="reglages" element={<PageTransition><SettingsPage /></PageTransition>} />
+        </Route>
+      </Routes>
+    </AnimatePresence>
   );
 }

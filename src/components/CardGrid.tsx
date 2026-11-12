@@ -12,7 +12,7 @@ export function CardGrid({ cards }: { cards: TcgdexCardBrief[] }) {
             to={`/carte/${encodeURIComponent(card.id)}`}
             className="block rounded-standard transition-opacity hover:opacity-90 focus-visible:opacity-100"
           >
-            <CardImage image={card.image} name={card.name} />
+            <CardImage image={card.image} name={card.name} disableHolographic />
             <p className="mt-1.5 truncate text-xs">{card.name}</p>
             <p className="truncate text-[11px] text-ink-muted">{card.id}</p>
           </Link>

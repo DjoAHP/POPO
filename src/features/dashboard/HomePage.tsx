@@ -7,8 +7,8 @@ import { Logo } from "../../components/Logo";
 import { CardImage } from "../../components/CardImage";
 import { db } from "../../db/database";
 import { collectionValue, collectionCardCount, sortCollection, type CollectionItem } from "../../db/collection";
-import { formatEur } from "../../lib/format";
 import { t } from "../../i18n";
+import { AnimatedEurCounter, AnimatedIntCounter } from "../../components/AnimatedCounter";
 
 /**
  * Écran Accueil (dashboard, fonctionnalité 8) :
@@ -115,7 +115,9 @@ function DashboardContent({
       <div className="grid gap-4 sm:grid-cols-2">
         <section className="rounded-standard border border-line bg-surface p-4">
           <p className="text-xs text-ink-muted">Valeur estimée</p>
-          <p className="mt-1 text-3xl font-semibold tracking-tight">{formatEur(value.total)}</p>
+          <p className="mt-1 text-3xl font-semibold tracking-tight">
+            <AnimatedEurCounter value={value.total} duration={1.2} />
+          </p>
           {value.unpricedCount > 0 && (
             <p className="mt-1 text-xs text-ink-muted">
               {value.unpricedCount} carte{value.unpricedCount > 1 ? "s" : ""} sans prix connu
@@ -125,7 +127,9 @@ function DashboardContent({
 
         <section className="rounded-standard border border-line bg-surface p-4">
           <p className="text-xs text-ink-muted">Cartes possédées</p>
-          <p className="mt-1 text-3xl font-semibold tracking-tight">{count}</p>
+          <p className="mt-1 text-3xl font-semibold tracking-tight">
+            <AnimatedIntCounter value={count} duration={0.8} />
+          </p>
           <p className="mt-1 text-xs text-ink-muted">
             {value.pricedCount} avec prix connu
           </p>

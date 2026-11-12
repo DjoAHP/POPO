@@ -140,7 +140,7 @@ function CardDetail({ card, rate, rateSource }: { card: Card; rate: number; rate
       <div className="grid gap-6 sm:grid-cols-[260px_1fr] sm:items-start">
         {/* 1. Image en grand (haute qualité) */}
         <div>
-          <CardImage image={card.image} name={card.name} quality="high" />
+          <CardImage image={card.image} name={card.name} quality="high" rarity={card.rarity} />
         </div>
 
         <div className="min-w-0">
