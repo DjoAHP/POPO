@@ -1,6 +1,12 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
-export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
+export type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "ghost"
+  | "success"
+  | "brand2"
+  | "danger";
 export type ButtonSize = "sm" | "md" | "lg";
 
 const base =
@@ -17,6 +23,8 @@ const variants: Record<ButtonVariant, string> = {
     "bg-gradient-to-br from-accent to-brand-2 text-on-brand shadow-[var(--glow-brand)] hover:brightness-110",
   secondary: "border border-line/70 bg-glass text-ink backdrop-blur hover:bg-surface-2",
   ghost: "text-ink-muted hover:bg-glass hover:text-ink",
+  success: "border border-success/40 bg-success/10 text-success hover:bg-success/15",
+  brand2: "border border-brand-2/40 bg-brand-2/10 text-brand-2 hover:bg-brand-2/15",
   danger: "border border-danger/40 bg-danger/10 text-danger hover:bg-danger/15",
 };
 
@@ -40,10 +48,11 @@ export function Button({
   size = "md",
   className,
   children,
+  type = "button",
   ...props
 }: ButtonProps) {
   return (
-    <button className={buttonStyles(variant, size, className)} {...props}>
+    <button type={type} className={buttonStyles(variant, size, className)} {...props}>
       {children}
     </button>
   );
