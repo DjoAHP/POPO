@@ -19,7 +19,7 @@ interface PageTransitionProps {
  * N'anime QUE opacity et transform (fluidité mobile).
  */
 const pageTransition = {
-  duration: 0.25,
+  duration: 0.2,
   ease: "easeOut" as const,
 };
 
@@ -29,9 +29,9 @@ export function PageTransition({ children, motionProps }: PageTransitionProps) {
   return (
     <motion.div
       key={location.pathname}
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
+      exit={{ opacity: 0, y: -8 }}
       transition={pageTransition}
       {...motionProps}
     >
@@ -65,10 +65,10 @@ export function TabTransition({ children }: { children: React.ReactNode }) {
 export function ZoomTransition({ children }: { children: React.ReactNode }) {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={{ opacity: 0, scale: 0.97 }}
       animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      exit={{ opacity: 0, scale: 0.97 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
     >
       {children}
     </motion.div>

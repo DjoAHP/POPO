@@ -1,10 +1,21 @@
 import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import { useLiveQuery } from "dexie-react-hooks";
-import { ArrowLeft, Download, Upload } from "lucide-react";
+import {
+  Database,
+  Download,
+  Heart,
+  Library,
+  Palette,
+  Upload,
+  Wallet,
+} from "lucide-react";
+import { BackLink } from "../../components/BackLink";
 import { PageHeader } from "../../components/PageHeader";
 import { BottomSheet } from "../../components/BottomSheet";
-import { ThemeToggle } from "../../components/ThemeToggle";
+import { Button } from "../../components/ui/Button";
+import { StatTile } from "../../components/ui/StatTile";
+import { Surface } from "../../components/ui/Surface";
+import { useTheme, type Theme } from "../../lib/theme";
 import { db } from "../../db/database";
 import { collectionValue } from "../../db/collection";
 import {
@@ -19,8 +30,8 @@ import { formatDate, formatEur } from "../../lib/format";
 import { t } from "../../i18n";
 
 /**
- * Écran Réglages (section 5) : thème, export/import de la collection,
- * et résumé des données locales. Accessible depuis l'Accueil.
+ * Écran Réglages (section 5) : thème avec aperçus, export/import de la
+ * collection et résumé des données locales (docs/DESIGN.md §4.5).
  */
 export default function SettingsPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -28,6 +39,7 @@ export default function SettingsPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const { theme, toggle } = useTheme();
   const collection = useLiveQuery(() => db.collection.toArray(), []);
   const wishlist = useLiveQuery(() => db.wishlist.toArray(), []);
   const syncDates = useLiveQuery(() => getSyncDates(), []);
@@ -62,12 +74,7 @@ export default function SettingsPage() {
 
   return (
     <div>
-      <nav className="mb-5" aria-label="Fil d'ariane">
-        <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-ink-muted hover:text-ink">
-          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-          {t.nav.home}
-        </Link>
-      </nav>
+      <BackLink to="/" label={t.nav.home} />
 
       <PageHeader
         eyebrow={t.settings.eyebrow}
@@ -76,37 +83,59 @@ export default function SettingsPage() {
       />
 
       {/* Thème */}
-      <section className="mb-4 rounded-standard border border-line bg-surface p-4">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h2 className="text-sm font-medium">{t.settings.appearanceTitle}</h2>
-            <p className="mt-1 text-xs text-ink-muted">{t.settings.appearanceText}</p>
-          </div>
-          <ThemeToggle />
+      <SettingsSection
+        icon={Palette}
+        title={t.settings.appearanceTitle}
+        text={t.settings.appearanceText}
+      >
+        <div className="mt-4 grid grid-cols-2 gap-3">
+          <ThemePreview
+            value="dark"
+            label={t.theme.dark}
+            active={theme === "dark"}
+            onSelect={() => theme !== "dark" && toggle()}
+          />
+          <ThemePreview
+            value="light"
+            label={t.theme.light}
+            active={theme === "light"}
+            onSelect={() => theme !== "light" && toggle()}
+          />
         </div>
-      </section>
+      </SettingsSection>
 
       {/* Mes données */}
-      <section className="mb-4 rounded-standard border border-line bg-surface p-4">
-        <h2 className="text-sm font-medium">{t.settings.dataTitle}</h2>
-        <dl className="mt-3 grid grid-cols-2 gap-y-2 text-sm">
-          <dt className="text-ink-muted">{t.settings.dataCards}</dt>
-          <dd>{collection?.length ?? 0}</dd>
-          <dt className="text-ink-muted">{t.settings.dataValue}</dt>
-          <dd>{formatEur(value.total)}</dd>
-          <dt className="text-ink-muted">{t.settings.dataWishlist}</dt>
-          <dd>{wishlist?.length ?? 0}</dd>
-        </dl>
-      </section>
+      <SettingsSection icon={Database} title={t.settings.dataTitle}>
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <StatTile
+            icon={Library}
+            label={t.settings.dataCards}
+            value={collection?.length ?? 0}
+            tone="accent"
+          />
+          <StatTile
+            icon={Wallet}
+            label={t.settings.dataValue}
+            value={formatEur(value.total)}
+            tone="gold"
+          />
+          <StatTile
+            icon={Heart}
+            label={t.settings.dataWishlist}
+            value={wishlist?.length ?? 0}
+            tone="brand2"
+          />
+        </div>
+      </SettingsSection>
 
       {/* Sauvegarde */}
-      <section className="rounded-standard border border-line bg-surface p-4">
-        <h2 className="text-sm font-medium">{t.settings.backupTitle}</h2>
-        <p className="mt-1 text-xs text-ink-muted">{t.settings.backupText}</p>
-
-        <div className="mt-3 grid gap-2">
-          <button
-            type="button"
+      <SettingsSection
+        icon={Download}
+        title={t.settings.backupTitle}
+        text={t.settings.backupText}
+      >
+        <div className="mt-4 grid gap-2">
+          <Button
             onClick={() => {
               setError(null);
               setMessage(null);
@@ -114,20 +143,15 @@ export default function SettingsPage() {
                 .then(() => setMessage(t.settings.exportDone))
                 .catch(() => setError(t.settings.exportError));
             }}
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-standard bg-accent text-sm font-medium text-accent-ink hover:opacity-90"
           >
             <Download className="h-4 w-4" aria-hidden="true" />
             {t.settings.exportButton}
-          </button>
+          </Button>
 
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-standard border border-line text-sm hover:bg-surface-2"
-          >
+          <Button variant="secondary" onClick={() => fileInputRef.current?.click()}>
             <Upload className="h-4 w-4" aria-hidden="true" />
             {t.settings.importButton}
-          </button>
+          </Button>
           <input
             ref={fileInputRef}
             type="file"
@@ -146,9 +170,9 @@ export default function SettingsPage() {
           {t.settings.lastImport} : {formatDate(syncDates?.lastImport ?? null) ?? t.settings.never}
         </p>
 
-        {message && <p className="mt-2 text-sm text-accent">{message}</p>}
-        {error && <p className="mt-2 text-sm text-ink">{error}</p>}
-      </section>
+        {message && <p className="mt-2 text-sm text-success">{message}</p>}
+        {error && <p className="mt-2 text-sm text-danger">{error}</p>}
+      </SettingsSection>
 
       {/* Confirmation d'import */}
       <BottomSheet
@@ -163,24 +187,88 @@ export default function SettingsPage() {
               {t.settings.importSummary(pending.collection.length, pending.wishlist.length)}
             </p>
             <div className="mt-4 grid gap-2">
-              <button
-                type="button"
-                onClick={() => void confirmImport()}
-                className="inline-flex h-11 items-center justify-center rounded-standard bg-accent text-sm font-medium text-accent-ink hover:opacity-90"
-              >
+              <Button variant="danger" onClick={() => void confirmImport()}>
                 {t.settings.importConfirm}
-              </button>
-              <button
-                type="button"
-                onClick={() => setPending(null)}
-                className="inline-flex h-11 items-center justify-center rounded-standard border border-line text-sm hover:bg-surface-2"
-              >
+              </Button>
+              <Button variant="secondary" onClick={() => setPending(null)}>
                 {t.settings.importCancel}
-              </button>
+              </Button>
             </div>
           </>
         )}
       </BottomSheet>
     </div>
+  );
+}
+
+/** Panneau de réglage : icône en pastille + titre + contenu. */
+function SettingsSection({
+  icon: Icon,
+  title,
+  text,
+  children,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  text?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Surface className="mb-4 p-4 sm:p-5">
+      <div className="flex items-start gap-3">
+        <span
+          aria-hidden="true"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-control bg-gradient-to-br from-accent/15 to-brand-2/15 text-accent"
+        >
+          <Icon className="h-5 w-5" />
+        </span>
+        <div className="min-w-0">
+          <h2 className="text-sm font-semibold">{title}</h2>
+          {text && <p className="mt-0.5 text-xs text-ink-muted">{text}</p>}
+        </div>
+      </div>
+      {children}
+    </Surface>
+  );
+}
+
+/** Carte de choix de thème avec mini-aperçu. */
+function ThemePreview({
+  value,
+  label,
+  active,
+  onSelect,
+}: {
+  value: Theme;
+  label: string;
+  active: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={active}
+      onClick={onSelect}
+      className={[
+        "rounded-card border p-2 text-left transition-colors",
+        active
+          ? "border-accent/60 ring-2 ring-accent/70"
+          : "border-line/70 hover:border-accent/40",
+      ].join(" ")}
+    >
+      <span className={`theme-preview theme-preview-${value}`} aria-hidden="true">
+        <span className="theme-preview-bar theme-preview-bar-brand" />
+        <span className="theme-preview-bar theme-preview-bar-muted" />
+        <span className="theme-preview-bar theme-preview-bar-accent" />
+      </span>
+      <span className="mt-2 flex items-center justify-between px-1">
+        <span className="text-xs font-medium">{label}</span>
+        {active && (
+          <span className="text-[10px] font-semibold uppercase tracking-wide text-accent">
+            {t.theme.active}
+          </span>
+        )}
+      </span>
+    </button>
   );
 }

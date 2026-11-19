@@ -73,7 +73,6 @@
 
 /* Jetons statiques (rayons, ombres) */
 @theme {
-  --radius-standard: 8px; /* conservé pour la migration, supprimé au lot 3 */
   --radius-card: 16px;
   --radius-control: 12px;
   --radius-pill: 9999px;
@@ -258,5 +257,47 @@
     .holo-card {
       transform: none !important;
     }
+  }
+
+  /* ============================================================
+     Aperçus de thème (Réglages) — docs/DESIGN.md §4.5.
+     ============================================================ */
+
+  .theme-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px;
+    border-radius: var(--radius-control);
+    border: 1px solid hsl(0 0% 50% / 0.18);
+  }
+
+  .theme-preview-dark {
+    background: hsl(231 38% 8%);
+  }
+
+  .theme-preview-light {
+    background: hsl(220 33% 97%);
+  }
+
+  .theme-preview-bar {
+    display: block;
+    height: 6px;
+    border-radius: var(--radius-pill);
+  }
+
+  .theme-preview-bar-brand {
+    width: 60%;
+    background: linear-gradient(90deg, hsl(188 92% 55%), hsl(265 85% 66%));
+  }
+
+  .theme-preview-bar-muted {
+    width: 80%;
+    background: hsl(220 12% 50% / 0.35);
+  }
+
+  .theme-preview-bar-accent {
+    width: 35%;
+    background: hsl(42 95% 60%);
   }
 }
