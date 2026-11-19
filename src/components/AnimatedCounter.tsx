@@ -1,5 +1,5 @@
-import { motion, useReducedMotion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useReducedMotion } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * Compteur animé : la valeur monte jusqu'à son total (section 7).
@@ -16,41 +16,54 @@ interface AnimatedCounterProps {
   className?: string;
 }
 
-/**
- * Nombre animé générique (pour compteurs simples).
- */
 interface AnimatedNumberProps {
   value: number;
   duration?: number;
   className?: string;
+  formatter?: (v: number) => string;
 }
 
-function AnimatedNumber({ value, duration = 1, className }: AnimatedNumberProps) {
+/**
+ * Nombre animé générique.
+ * La valeur affichée est suivie dans un ref pour éviter de relancer
+ * l'animation à chaque image (l'effet ne dépend que de `value`).
+ */
+function AnimatedNumber({
+  value,
+  duration = 1,
+  className,
+  formatter = (v) => String(Math.round(v)),
+}: AnimatedNumberProps) {
   const [displayValue, setDisplayValue] = useState(0);
+  const displayRef = useRef(0);
   const prefersReduced = useReducedMotion();
 
   useEffect(() => {
     if (prefersReduced) {
+      displayRef.current = value;
       setDisplayValue(value);
       return;
     }
+
+    const from = displayRef.current;
     const startTime = performance.now();
-    const startValue = displayValue;
+    let raf = 0;
 
     const animate = (now: number) => {
-      const elapsed = (now - startTime) / 1000;
-      const progress = Math.min(elapsed / duration, 1);
+      const progress = Math.min((now - startTime) / (duration * 1000), 1);
       // Easing easeOut
       const eased = 1 - Math.pow(1 - progress, 3);
-      setDisplayValue(startValue + (value - startValue) * eased);
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      }
+      const next = from + (value - from) * eased;
+      displayRef.current = next;
+      setDisplayValue(next);
+      if (progress < 1) raf = requestAnimationFrame(animate);
     };
-    requestAnimationFrame(animate);
-  }, [value, duration, prefersReduced, displayValue]);
 
-  return <motion.span className={className}>{Math.round(displayValue)}</motion.span>;
+    raf = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(raf);
+  }, [value, duration, prefersReduced]);
+
+  return <span className={className}>{formatter(displayValue)}</span>;
 }
 
 export function AnimatedCounter({
@@ -65,12 +78,17 @@ export function AnimatedCounter({
     return <span className={className}>{formatter(value)}</span>;
   }
 
-  return <AnimatedNumber value={value} duration={duration} className={className} />;
+  return (
+    <AnimatedNumber
+      value={value}
+      duration={duration}
+      className={className}
+      formatter={formatter}
+    />
+  );
 }
 
-/**
- * Version pour les valeurs monétaires (€).
- */
+/** Version pour les valeurs monétaires (€). */
 export function AnimatedEurCounter({
   value,
   duration = 1.2,
@@ -79,20 +97,30 @@ export function AnimatedEurCounter({
   return (
     <AnimatedCounter
       value={value}
-      formatter={(v) => new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(v)}
+      formatter={(v) =>
+        new Intl.NumberFormat("fr-FR", {
+          style: "currency",
+          currency: "EUR",
+        }).format(v)
+      }
       duration={duration}
       className={className}
     />
   );
 }
 
-/**
- * Version pour les entiers simples (nombre de cartes).
- */
+/** Version pour les entiers simples (nombre de cartes). */
 export function AnimatedIntCounter({
   value,
   duration = 0.8,
   className,
 }: Omit<AnimatedCounterProps, "formatter">) {
-  return <AnimatedCounter value={value} formatter={(v) => v.toLocaleString("fr-FR")} duration={duration} className={className} />;
+  return (
+    <AnimatedCounter
+      value={value}
+      formatter={(v) => String(Math.round(v))}
+      duration={duration}
+      className={className}
+    />
+  );
 }

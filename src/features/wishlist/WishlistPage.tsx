@@ -25,7 +25,11 @@ export default function WishlistPage() {
 
   return (
     <div>
-      <PageHeader title={t.wishlist.title} description={t.wishlist.description} />
+      <PageHeader
+        eyebrow={t.wishlist.eyebrow}
+        title={t.wishlist.title}
+        description={t.wishlist.description}
+      />
 
       {!loading && list.length > 0 && (
         <section className="mb-5 rounded-standard border border-line bg-surface p-4">
@@ -41,7 +45,7 @@ export default function WishlistPage() {
       )}
 
       {loading ? (
-        <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           {Array.from({ length: 6 }, (_, i) => (
             <div key={i} className="aspect-[245/337] w-full animate-pulse rounded-standard bg-surface-2" />
           ))}
@@ -57,7 +61,7 @@ export default function WishlistPage() {
           </Link>
         </EmptyState>
       ) : (
-        <ul className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
+        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           {list.map((item) => (
             <li key={item.id}>
               <button

@@ -8,6 +8,7 @@ export const fr = {
   app: {
     name: "POPO",
     tagline: "Ta collection Pokémon, en poche.",
+    taglineShort: "Collection Pokémon",
   },
   nav: {
     home: "Accueil",
@@ -16,19 +17,40 @@ export const fr = {
     wishlist: "Wishlist",
     sets: "Sets",
     mainLabel: "Navigation principale",
+    skipToContent: "Aller au contenu",
+    settings: "Réglages",
   },
   theme: {
     toLight: "Passer en thème clair",
     toDark: "Passer en thème sombre",
   },
   home: {
+    eyebrow: "Tableau de bord",
     title: "Accueil",
     dashboardLaterTitle: "Tableau de bord à venir",
     dashboardLaterText:
       "La valeur de ta collection, le nombre de cartes et la progression des sets arriveront à la phase 4.",
     ctaSearch: "Rechercher une carte",
+    quickSearchPlaceholder: "Rechercher une carte…",
+    quickSearchButton: "Rechercher",
+    recentTitle: "Dernières ajoutées",
+    seeAll: "Tout voir",
+    setsTitle: "Progression des sets",
+    valueLabel: "Valeur estimée",
+    valueHint: "Cardmarket et TCGplayer, en euros",
+    cardsLabel: "Cartes possédées",
+    cardsHint: "toutes quantités confondues",
+    setsLabel: "Sets suivis",
+    setsHint: "extensions différentes",
+    featureSearchTitle: "Chercher",
+    featureSearchText: "Trouve une carte et compare son prix.",
+    featureCompareTitle: "Comparer",
+    featureCompareText: "Cardmarket face à TCGplayer, en euros.",
+    featureCollectTitle: "Collectionner",
+    featureCollectText: "Ta collection reste sur ton appareil.",
   },
   search: {
+    eyebrow: "Explorer",
     title: "Recherche",
     description: "Cherche une carte par son nom, filtre par set, rareté ou type.",
     placeholder: "Nom de la carte (ex. Dracaufeu)",
@@ -39,6 +61,9 @@ export const fr = {
     filterType: "Type",
     filterAll: "Tous",
     clearFilters: "Réinitialiser",
+    filtersButton: "Filtres",
+    filtersActive: (n: number) => `${n} filtre${n > 1 ? "s" : ""} actif${n > 1 ? "s" : ""}`,
+    filtersApply: "Voir les résultats",
     resultsCount: (n: number) => `${n} résultat${n > 1 ? "s" : ""}`,
     emptyTitle: "Aucune carte trouvée",
     emptyText: "Essaie un autre nom, ou allège tes filtres.",
@@ -48,6 +73,7 @@ export const fr = {
     loading: "Chargement…",
   },
   card: {
+    eyebrow: "Fiche carte",
     backToSearch: "Recherche",
     notFoundTitle: "Carte introuvable",
     notFoundText: "Cette carte n'existe pas (ou plus) dans la base TCGdex.",
@@ -95,6 +121,7 @@ export const fr = {
     unavailable: "PokéAPI indisponible",
   },
   collection: {
+    eyebrow: "Ma collection",
     title: "Collection",
     description: "Toutes les cartes que tu possèdes, sauvegardées sur ton appareil.",
     emptyTitle: "Ta collection est vide",
@@ -117,6 +144,7 @@ export const fr = {
     editTitle: "Modifier la carte",
   },
   wishlist: {
+    eyebrow: "Mes envies",
     title: "Wishlist",
     description: "Les cartes que tu veux ajouter à ta collection un jour.",
     emptyTitle: "Ta wishlist est vide",
@@ -136,6 +164,7 @@ export const fr = {
     damaged: "Abîmé",
   },
   settings: {
+    eyebrow: "Préférences",
     title: "Réglages",
     description: "Thème, sauvegarde de ta collection et préférences.",
     appearanceTitle: "Apparence",
@@ -164,8 +193,10 @@ export const fr = {
     never: "Jamais",
   },
   sets: {
+    eyebrow: "Extensions",
     title: "Sets",
     description: "Les extensions Pokémon et ta progression dans chacune.",
+    searchPlaceholder: "Rechercher un set…",
     emptyTitle: "Aucun set",
     emptyText: "La liste des extensions arrivera à la phase 4.",
     detailTitle: "Set",
@@ -180,6 +211,9 @@ export const fr = {
     filterOwned: "Possédées",
     filterMissing: "Manquantes",
     noCards: "Aucune carte dans ce set.",
+  },
+  common: {
+    noVisual: "Pas de visuel",
   },
 } as const;
 

@@ -44,8 +44,9 @@ export function BottomSheet({ open, title, onClose, children }: BottomSheetProps
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="relative w-full max-w-md rounded-t-standard border border-line bg-surface p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] lg:rounded-standard"
+        className="relative w-full max-w-md rounded-t-card border border-line/70 bg-surface p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-[var(--shadow-float)] lg:rounded-card"
       >
+        <div className="mx-auto mb-3 h-1.5 w-10 rounded-pill bg-line lg:hidden" aria-hidden="true" />
         <div className="mb-3 flex items-center justify-between gap-4">
           <h2 className="font-semibold">{title}</h2>
           <button

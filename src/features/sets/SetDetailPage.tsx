@@ -5,6 +5,7 @@ import { ArrowLeft, Layers, Search } from "lucide-react";
 import { PageHeader } from "../../components/PageHeader";
 import { CardImage } from "../../components/CardImage";
 import { EmptyState } from "../../components/EmptyState";
+import { SetLogo } from "../../components/SetLogo";
 import { db } from "../../db/database";
 import { useSetDetail } from "../../api/queries";
 import { t } from "../../i18n";
@@ -38,8 +39,8 @@ export default function SetDetailPage() {
   if (loading) {
     return (
       <div>
-        <PageHeader title={t.sets.detailTitle} />
-        <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
+        <PageHeader eyebrow={t.sets.eyebrow} title={t.sets.detailTitle} />
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           {Array.from({ length: 12 }).map((_, i) => (
             <div key={i} className="aspect-[245/337] w-full animate-pulse rounded-standard bg-surface-2" />
           ))}
@@ -51,7 +52,7 @@ export default function SetDetailPage() {
   if (setQuery.isError) {
     return (
       <div>
-        <PageHeader title={t.sets.detailTitle} />
+        <PageHeader eyebrow={t.sets.eyebrow} title={t.sets.detailTitle} />
         <EmptyState
           icon={Layers}
           title="Impossible de charger"
@@ -72,7 +73,7 @@ export default function SetDetailPage() {
   if (!set) {
     return (
       <div>
-        <PageHeader title={t.sets.detailTitle} />
+        <PageHeader eyebrow={t.sets.eyebrow} title={t.sets.detailTitle} />
         <EmptyState icon={Layers} title="Set introuvable" text="Ce set n'existe pas dans la base TCGdex." />
       </div>
     );
@@ -108,15 +109,7 @@ export default function SetDetailPage() {
       <div className="mb-5 rounded-standard border border-line bg-surface p-4">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
-            {set.logo && (
-              <img
-                src={`${set.logo}.webp`}
-                alt=""
-                width={48}
-                height={48}
-                className="h-12 w-12 shrink-0 rounded-standard object-cover"
-              />
-            )}
+            <SetLogo logo={set.logo} symbol={set.symbol} name={set.name} className="h-12 w-12" />
             <div>
               <h1 className="text-xl font-semibold">{set.name}</h1>
               <p className="text-sm text-ink-muted">
@@ -176,7 +169,7 @@ export default function SetDetailPage() {
       {filtered.length === 0 ? (
         <EmptyState icon={Search} title={t.sets.noCards} text={filter === "owned" ? "Tu ne possèdes aucune carte de ce set." : filter === "missing" ? "Tu as toutes les cartes de ce set !" : ""} />
       ) : (
-        <ul className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
+        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           {filtered.map((card: { id: string; image?: string; name: string; localId: string }) => {
             const owned = ownedIds.get(card.id);
             return (

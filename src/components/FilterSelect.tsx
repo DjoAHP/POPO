@@ -26,7 +26,7 @@ export function FilterSelect({ id, label, value, options, onChange }: FilterSele
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-10 w-full rounded-standard border border-line bg-surface px-2.5 text-sm"
+        className="h-11 w-full rounded-control border border-line/70 bg-glass px-3 text-sm backdrop-blur transition-colors hover:bg-surface-2"
       >
         <option value="">{t.search.filterAll}</option>
         {options.map((opt) => (

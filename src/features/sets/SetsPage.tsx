@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Layers } from "lucide-react";
 import { PageHeader } from "../../components/PageHeader";
 import { EmptyState } from "../../components/EmptyState";
+import { SetLogo } from "../../components/SetLogo";
 import { useSets } from "../../api/queries";
 import { t } from "../../i18n";
 
@@ -19,7 +20,11 @@ export default function SetsPage() {
   if (loading) {
     return (
       <div>
-        <PageHeader title={t.sets.title} description={t.sets.description} />
+        <PageHeader
+          eyebrow={t.sets.eyebrow}
+          title={t.sets.title}
+          description={t.sets.description}
+        />
         <div className="space-y-3">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="animate-pulse flex items-center gap-3 rounded-standard border border-line bg-surface p-3">
@@ -38,7 +43,11 @@ export default function SetsPage() {
   if (sets.length === 0) {
     return (
       <div>
-        <PageHeader title={t.sets.title} description={t.sets.description} />
+        <PageHeader
+          eyebrow={t.sets.eyebrow}
+          title={t.sets.title}
+          description={t.sets.description}
+        />
         <EmptyState icon={Layers} title={t.sets.emptyTitle} text={t.sets.emptyText} />
       </div>
     );
@@ -46,7 +55,11 @@ export default function SetsPage() {
 
   return (
     <div>
-      <PageHeader title={t.sets.title} description={t.sets.description} />
+      <PageHeader
+        eyebrow={t.sets.eyebrow}
+        title={t.sets.title}
+        description={t.sets.description}
+      />
 
       <ul className="space-y-3" role="list">
         {sets.map((set) => (
@@ -55,17 +68,8 @@ export default function SetsPage() {
               to={`/set/${encodeURIComponent(set.id)}`}
               className="flex items-center gap-3 rounded-standard border border-line bg-surface p-3 transition-colors hover:bg-surface-2"
             >
-              <div className="h-12 w-12 shrink-0 rounded-standard bg-surface-2 flex items-center justify-center">
-                {set.logo && (
-                  <img
-                    src={`${set.logo}.webp`}
-                    alt=""
-                    loading="lazy"
-                    width={40}
-                    height={40}
-                    className="h-10 w-10 shrink-0 rounded-standard object-cover"
-                  />
-                )}
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-control bg-surface-2">
+                <SetLogo logo={set.logo} symbol={set.symbol} name={set.name} />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="font-medium truncate">{set.name}</p>

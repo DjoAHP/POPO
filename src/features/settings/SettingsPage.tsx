@@ -69,7 +69,11 @@ export default function SettingsPage() {
         </Link>
       </nav>
 
-      <PageHeader title={t.settings.title} description={t.settings.description} />
+      <PageHeader
+        eyebrow={t.settings.eyebrow}
+        title={t.settings.title}
+        description={t.settings.description}
+      />
 
       {/* Thème */}
       <section className="mb-4 rounded-standard border border-line bg-surface p-4">
