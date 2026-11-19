@@ -1,179 +1,204 @@
-import { useEffect, useRef, useState, type ReactNode, type MouseEvent, type TouchEvent } from "react";
-import { type HolographicEffectType } from "../config/holographic";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  type CSSProperties,
+  type PointerEvent as ReactPointerEvent,
+  type ReactNode,
+} from "react";
+import { useReducedMotion } from "motion/react";
+import type { HoloTheme } from "../config/holographic";
 
 interface HolographicCardProps {
-  /** Type d'effet : "full" (inclinaison + reflet) ou "tilt-only" (inclinaison légère). */
-  effect: HolographicEffectType;
-  /** Enfants : l'image de la carte, etc. */
+  /** Thème iridescent déterminé par la rareté. */
+  theme: HoloTheme;
+  /** Contenu : l'image de la carte. */
   children: ReactNode;
-  /** ClassName additionnel. */
   className?: string;
-  /** Désactive l'effet (ex. prefers-reduced-motion). */
+  /** Désactive toute interaction (image absente, carte en cours de chargement…). */
   disabled?: boolean;
-  /** Intensité max de l'inclinaison en degrés. */
-  maxTilt?: number;
-  /** Vitesse de l'animation de reflet (secondes). */
-  shimmerSpeed?: number;
+  /** Inclinaison au gyroscope, après accord explicite de l'utilisateur. */
+  gyroscope?: boolean;
 }
 
+/** Amplitude maximale de l'inclinaison, en degrés. */
+const MAX_TILT = 12;
+/** Amplitude réduite des cartes communes : effet présent, jamais spectaculaire. */
+const MAX_TILT_STANDARD = 5;
+
+interface HoloTarget {
+  /** Position horizontale du pointeur, 0 → 1. */
+  x: number;
+  /** Position verticale du pointeur, 0 → 1. */
+  y: number;
+  /** Rotation autour de l'axe horizontal, en degrés. */
+  rx: number;
+  /** Rotation autour de l'axe vertical, en degrés. */
+  ry: number;
+}
+
+const NEUTRAL: HoloTarget = { x: 0.5, y: 0.5, rx: 0, ry: 0 };
+
+const clamp = (value: number, min = 0, max = 1) =>
+  Math.min(max, Math.max(min, value));
+
 /**
- * Carte avec effet holographique :
- * - Inclinaison 3D suivant la souris / le toucher
- * - Reflet irisé animé (sur effet "full")
- * - Sur mobile : DeviceOrientation API (inclinaison téléphone) avec permission iOS,
- *   fallback sur le toucher/glissement
- * - Respecte prefers-reduced-motion (désactive tout, garde l'essentiel)
- * - N'anime QUE transform et opacity (fluidité mobile)
+ * Carte avec effet holographique (docs/DESIGN.md §5).
+ *
+ * Correction du rognage : le conteneur qui porte la rotation 3D
+ * (`.holo-card`) ne masque rien. Seule `.holo-clip`, autour de l'image,
+ * applique `overflow: hidden` et l'arrondi. Les coins peuvent donc sortir de
+ * la boîte pendant l'inclinaison sans être coupés.
+ *
+ * Technique : les positions sont écrites dans des variables CSS
+ * (`--holo-x`, `--holo-y`, `--holo-rx`, `--holo-ry`) via une seule frame
+ * `requestAnimationFrame` par mouvement. Aucun re-render React.
  */
 export function HolographicCard({
-  effect,
+  theme,
   children,
   className,
   disabled = false,
-  maxTilt = 12,
-  shimmerSpeed = 4,
+  gyroscope = false,
 }: HolographicCardProps) {
+  const stageRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const [useDeviceOrientation, setUseDeviceOrientation] = useState(false);
-  const [prefersReduced, setPrefersReduced] = useState(false);
+  const frameRef = useRef<number | null>(null);
+  const targetRef = useRef<HoloTarget>(NEUTRAL);
+  const prefersReduced = useReducedMotion();
 
-  // Détection prefers-reduced-motion au montage
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReduced(mediaQuery.matches);
-    const handler = (e: MediaQueryListEvent) => setPrefersReduced(e.matches);
-    mediaQuery.addEventListener("change", handler);
-    return () => mediaQuery.removeEventListener("change", handler);
+  const interactive = !disabled && !prefersReduced;
+  const maxTilt = theme.id === "standard" ? MAX_TILT_STANDARD : MAX_TILT;
+
+  /* ---------------------------- écriture DOM ---------------------------- */
+
+  const applyTarget = useCallback(() => {
+    frameRef.current = null;
+    const card = cardRef.current;
+    if (!card) return;
+
+    const { x, y, rx, ry } = targetRef.current;
+    card.style.setProperty("--holo-x", x.toFixed(4));
+    card.style.setProperty("--holo-y", y.toFixed(4));
+    card.style.setProperty("--holo-rx", `${rx.toFixed(2)}deg`);
+    card.style.setProperty("--holo-ry", `${ry.toFixed(2)}deg`);
   }, []);
 
-  // Demande de permission DeviceOrientation (iOS 13+) si nécessaire
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (prefersReduced || disabled) return;
-    if (effect !== "full") return;
-
-    // DeviceOrientationEvent.requestPermission existe seulement sur iOS (Safari)
-    const requestPermission = async () => {
-      try {
-        // @ts-expect-error - requestPermission n'existe que sur iOS
-        const permission = await DeviceOrientationEvent.requestPermission?.();
-        if (permission === "granted") {
-          setUseDeviceOrientation(true);
-        }
-      } catch {
-        // Permission refusée ou non supportée → fallback tactile
+  const schedule = useCallback(
+    (next: HoloTarget) => {
+      targetRef.current = next;
+      if (frameRef.current === null) {
+        frameRef.current = requestAnimationFrame(applyTarget);
       }
-    };
+    },
+    [applyTarget],
+  );
 
-    // On ne demande la permission qu'au premier interaction utilisateur
-    // (clic/touch n'importe où) pour ne pas bloquer l'UI
-    const onFirstInteraction = () => {
-      requestPermission();
-      document.removeEventListener("click", onFirstInteraction);
-      document.removeEventListener("touchstart", onFirstInteraction);
-    };
-    document.addEventListener("click", onFirstInteraction, { once: true });
-    document.addEventListener("touchstart", onFirstInteraction, { once: true, passive: true });
+  useEffect(
+    () => () => {
+      if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
+    },
+    [],
+  );
 
-    return () => {
-      document.removeEventListener("click", onFirstInteraction);
-      document.removeEventListener("touchstart", onFirstInteraction);
-    };
-  }, [prefersReduced, disabled, effect]);
+  /* ------------------------- pointeur / toucher ------------------------- */
 
-  // Gestion DeviceOrientation (inclinaison téléphone)
+  const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!interactive) return;
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    const rect = stage.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return;
+
+    const x = clamp((event.clientX - rect.left) / rect.width);
+    const y = clamp((event.clientY - rect.top) / rect.height);
+
+    schedule({
+      x,
+      y,
+      rx: (0.5 - y) * maxTilt * 2,
+      ry: (x - 0.5) * maxTilt * 2,
+    });
+  };
+
+  const handlePointerEnter = () => {
+    if (!interactive || !cardRef.current) return;
+    cardRef.current.dataset.active = "true";
+    // Promu seulement pendant l'interaction (docs/DESIGN.md §5.7).
+    cardRef.current.style.willChange = "transform";
+  };
+
+  const reset = () => {
+    if (!cardRef.current) return;
+    delete cardRef.current.dataset.active;
+    cardRef.current.style.willChange = "";
+    if (!interactive) return;
+    schedule(NEUTRAL);
+  };
+
+  /* ------------------------------ gyroscope ----------------------------- */
+
   useEffect(() => {
-    if (!useDeviceOrientation || prefersReduced || disabled || effect !== "full") return;
+    if (!gyroscope || !interactive) return;
+    if (typeof window === "undefined" || !("DeviceOrientationEvent" in window)) {
+      return;
+    }
 
-    const handler = (event: DeviceOrientationEvent) => {
-      // event.beta = inclinaison avant/arrière (-180 à 180)
-      // event.gamma = inclinaison gauche/droite (-90 à 90)
-      // On inverse gamma pour que l'inclinaison soit naturelle
-      const x = Math.max(-maxTilt, Math.min(maxTilt, event.beta ?? 0));
-      const y = Math.max(-maxTilt, Math.min(maxTilt, -(event.gamma ?? 0)));
-      setTilt({ x, y });
+    // Position neutre = orientation du téléphone au moment de l'activation.
+    let origin: { beta: number; gamma: number } | null = null;
+
+    const onOrientation = (event: DeviceOrientationEvent) => {
+      if (event.beta === null || event.gamma === null) return;
+      if (!origin) origin = { beta: event.beta, gamma: event.gamma };
+
+      const deltaBeta = event.beta - origin.beta;
+      const deltaGamma = event.gamma - origin.gamma;
+
+      schedule({
+        x: clamp(0.5 + deltaGamma / 60),
+        y: clamp(0.5 + deltaBeta / 60),
+        rx: clamp(deltaBeta * 0.35, -maxTilt, maxTilt),
+        ry: clamp(-deltaGamma * 0.35, -maxTilt, maxTilt),
+      });
     };
 
-    window.addEventListener("deviceorientation", handler);
-    return () => window.removeEventListener("deviceorientation", handler);
-  }, [useDeviceOrientation, prefersReduced, disabled, effect, maxTilt]);
+    window.addEventListener("deviceorientation", onOrientation);
+    return () => window.removeEventListener("deviceorientation", onOrientation);
+  }, [gyroscope, interactive, maxTilt, schedule]);
 
-  // Gestion souris (desktop)
-  const onMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    if (prefersReduced || disabled || useDeviceOrientation) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    const x = ((e.clientY - centerY) / (rect.height / 2)) * maxTilt;
-    const y = ((e.clientX - centerX) / (rect.width / 2)) * maxTilt * -1;
-    setTilt({ x: Math.max(-maxTilt, Math.min(maxTilt, x)), y: Math.max(-maxTilt, Math.min(maxTilt, y)) });
-  };
+  /* -------------------------------- rendu ------------------------------- */
 
-  const onMouseLeave = () => {
-    if (prefersReduced || disabled || useDeviceOrientation) return;
-    setTilt({ x: 0, y: 0 });
-  };
-
-  // Gestion tactile (mobile fallback)
-  const onTouchMove = (e: TouchEvent<HTMLDivElement>) => {
-    if (prefersReduced || disabled || useDeviceOrientation) return;
-    const touch = e.touches[0];
-    if (!touch) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    const x = ((touch.clientY - centerY) / (rect.height / 2)) * maxTilt;
-    const y = ((touch.clientX - centerX) / (rect.width / 2)) * maxTilt * -1;
-    setTilt({ x: Math.max(-maxTilt, Math.min(maxTilt, x)), y: Math.max(-maxTilt, Math.min(maxTilt, y)) });
-  };
-
-  const onTouchEnd = () => {
-    if (prefersReduced || disabled || useDeviceOrientation) return;
-    setTilt({ x: 0, y: 0 });
-  };
-
-  // Styles calculés : ONLY transform et opacity
-  const cardStyle: React.CSSProperties = {
-    transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
-    transformStyle: "preserve-3d",
-    transition: prefersReduced || disabled ? "none" : "transform 0.1s ease-out",
-  };
-
-  const shimmerStyle: React.CSSProperties = effect === "full" && !prefersReduced && !disabled
-    ? {
-        position: "absolute",
-        inset: 0,
-        borderRadius: "inherit",
-        pointerEvents: "none",
-        background: "linear-gradient(110deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%)",
-        backgroundSize: "200% 100%",
-        animation: `shimmer ${shimmerSpeed}s linear infinite`,
-        opacity: 0.6,
-      }
-    : { display: "none" };
+  const cardStyle = {
+    "--foil-1": theme.foil[0],
+    "--foil-2": theme.foil[1],
+    "--foil-3": theme.foil[2],
+    "--holo-strength": theme.intensity,
+    boxShadow: `0 26px 50px -28px ${theme.glow}`,
+  } as CSSProperties;
 
   return (
     <div
-      ref={cardRef}
-      className={`relative overflow-hidden rounded-standard ${className}`}
-      style={{ transformStyle: "preserve-3d" }}
-      onMouseMove={onMouseMove}
-      onMouseLeave={onMouseLeave}
-      onTouchMove={onTouchMove}
-      onTouchEnd={onTouchEnd}
+      ref={stageRef}
+      className={["holo-stage relative", className].filter(Boolean).join(" ")}
+      onPointerMove={interactive ? handlePointerMove : undefined}
+      onPointerEnter={interactive ? handlePointerEnter : undefined}
+      onPointerLeave={interactive ? reset : undefined}
+      onPointerCancel={interactive ? reset : undefined}
     >
-      <div style={cardStyle} className="relative">
-        {children}
-        {/* Reflet irisé animé */}
-        <div style={shimmerStyle} aria-hidden="true" />
+      <div ref={cardRef} className="holo-card" style={cardStyle}>
+        {/* Seul élément masquant : l'image. */}
+        <div className="holo-clip">{children}</div>
+
+        {theme.id !== "standard" && (
+          <>
+            <span className="holo-layer holo-foil" aria-hidden="true" />
+            <span className="holo-layer holo-glare" aria-hidden="true" />
+          </>
+        )}
+        <span className="holo-layer holo-grain" aria-hidden="true" />
+        <span className="holo-layer holo-edge" aria-hidden="true" />
       </div>
-      <style>{`
-        @keyframes shimmer {
-          0% { background-position: -200% 0; }
-          100% { background-position: 200% 0; }
-        }
-      `}</style>
     </div>
   );
 }

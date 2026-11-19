@@ -4,6 +4,8 @@
  * Seul endroit à modifier pour ajuster les couleurs de types / raretés.
  */
 
+import { TYPE_NAMES_FR } from "../api/pokeapi";
+
 export const POKEMON_TYPE_COLORS: Record<string, string> = {
   normal: "hsl(40 12% 60%)",
   fire: "hsl(18 90% 58%)",
@@ -28,9 +30,19 @@ export const POKEMON_TYPE_COLORS: Record<string, string> = {
   shadow: "hsl(265 40% 35%)",
 };
 
-/** Couleur d'un type, avec repli neutre. */
+/** Couleur d'un type, avec repli neutre. Accepte « fire » ou « Feu ». */
 export function typeColor(type: string): string {
-  return POKEMON_TYPE_COLORS[type] ?? "hsl(220 10% 55%)";
+  const value = type.trim().toLowerCase();
+
+  // 1. Clé technique de l'API ("fire", "water"…)
+  if (POKEMON_TYPE_COLORS[value]) return POKEMON_TYPE_COLORS[value];
+
+  // 2. Libellé français ("Feu", "Eau"…) — utilisé par les coûts d'attaque
+  const key = Object.entries(TYPE_NAMES_FR).find(
+    ([, label]) => label.toLowerCase() === value,
+  )?.[0];
+
+  return (key && POKEMON_TYPE_COLORS[key]) || "hsl(220 10% 55%)";
 }
 
 /** Couleur d'accent d'une rareté (badges). */

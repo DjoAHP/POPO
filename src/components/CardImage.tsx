@@ -1,7 +1,7 @@
 import { cardImageUrl } from "../api/tcgdex";
 import { HolographicCard } from "./HolographicCard";
 import { Logo } from "./Logo";
-import { getHolographicEffectType } from "../config/holographic";
+import { getHoloTheme } from "../config/holographic";
 import { t } from "../i18n";
 
 interface CardImageProps {
@@ -14,14 +14,18 @@ interface CardImageProps {
   className?: string;
   /** Désactive l'effet holographique (ex. pour les miniatures en grille). */
   disableHolographic?: boolean;
+  /** Inclinaison au gyroscope (opt-in explicite depuis la fiche carte). */
+  gyroscope?: boolean;
 }
 
 /**
  * Image de carte TCGdex, toujours respectée (jamais déformée ni rognée :
  * ratio natif 245×337 en `low`, 600×825 en `high`).
  * Repli propre quand la carte n'a pas de visuel dans la base.
- * Sur les cartes rares/holo : inclinaison 3D + reflet irisé (effet "full").
- * Sur les communes : inclinaison légère seulement (effet "tilt-only").
+ *
+ * En fiche carte (`high`) : inclinaison 3D + iridescence dont l'intensité
+ * dépend de la rareté (docs/DESIGN.md §5). En grille (`low`) : image seule,
+ * le reflet est géré en CSS par `CardTile`.
  */
 export function CardImage({
   image,
@@ -30,6 +34,7 @@ export function CardImage({
   quality = "low",
   className,
   disableHolographic = false,
+  gyroscope = false,
 }: CardImageProps) {
   const url = cardImageUrl(image, quality);
 
@@ -69,10 +74,9 @@ export function CardImage({
     return <>{img}</>;
   }
 
-  // Fiche carte (high) : effet selon la rareté
-  const effect = getHolographicEffectType(rarity);
+  // Fiche carte : effet dont l'intensité dépend de la rareté.
   return (
-    <HolographicCard effect={effect} maxTilt={effect === "full" ? 12 : 3}>
+    <HolographicCard theme={getHoloTheme(rarity)} gyroscope={gyroscope}>
       {img}
     </HolographicCard>
   );

@@ -124,13 +124,67 @@ export function isHolographicRarity(rarity: string | undefined): boolean {
 }
 
 /**
- * Types d'effets disponibles.
- * - "full" : inclinaison 3D + reflet irisé (cartes rares/holo)
- * - "tilt-only" : inclinaison légère seulement, sans reflet (communes)
+ * Thème holographique d'une carte (docs/DESIGN.md §5.4).
+ * - `standard` : aucune iridescence, inclinaison très légère ;
+ * - `holo` : cyan / violet / blanc ;
+ * - `ultra` : or / rose / ambre ;
+ * - `shiny` : argent / arc-en-ciel.
  */
-export type HolographicEffectType = "full" | "tilt-only";
+export interface HoloTheme {
+  id: "standard" | "holo" | "ultra" | "shiny";
+  /** Couleurs du foil iridescent (3 arrêts). */
+  foil: [string, string, string];
+  /** Halo extérieur teinté par la rareté. */
+  glow: string;
+  /** 0 → 1 : opacité du foil et du reflet. */
+  intensity: number;
+}
 
-/** Renvoie le type d'effet selon la rareté. */
-export function getHolographicEffectType(rarity: string | undefined): HolographicEffectType {
-  return isHolographicRarity(rarity) ? "full" : "tilt-only";
+export const HOLO_THEMES: Record<HoloTheme["id"], HoloTheme> = {
+  standard: {
+    id: "standard",
+    foil: ["transparent", "transparent", "transparent"],
+    glow: "hsl(220 12% 60% / 0.22)",
+    intensity: 0,
+  },
+  holo: {
+    id: "holo",
+    foil: ["hsl(188 92% 68%)", "hsl(265 85% 74%)", "hsl(210 90% 88%)"],
+    glow: "hsl(188 92% 55% / 0.45)",
+    intensity: 0.6,
+  },
+  ultra: {
+    id: "ultra",
+    foil: ["hsl(42 95% 64%)", "hsl(335 85% 70%)", "hsl(265 85% 74%)"],
+    glow: "hsl(42 95% 60% / 0.5)",
+    intensity: 0.72,
+  },
+  shiny: {
+    id: "shiny",
+    foil: ["hsl(0 0% 96%)", "hsl(188 92% 78%)", "hsl(265 85% 82%)"],
+    glow: "hsl(0 0% 90% / 0.42)",
+    intensity: 0.66,
+  },
+};
+
+/**
+ * Choisit le thème holographique d'une rareté.
+ * Seul endroit à modifier pour ajuster les palettes par rareté.
+ */
+export function getHoloTheme(rarity: string | undefined): HoloTheme {
+  const normalized = rarity?.trim().toLowerCase() ?? "";
+
+  if (normalized.includes("shiny") || normalized.includes("chromatique")) {
+    return HOLO_THEMES.shiny;
+  }
+  if (
+    normalized.includes("hyper") ||
+    normalized.includes("ultra") ||
+    normalized.includes("illustration") ||
+    normalized.includes("magnifique")
+  ) {
+    return HOLO_THEMES.ultra;
+  }
+  if (isHolographicRarity(rarity)) return HOLO_THEMES.holo;
+  return HOLO_THEMES.standard;
 }

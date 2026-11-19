@@ -111,6 +111,8 @@ export const fr = {
     attacksTitle: "Attaques",
     abilitiesTitle: "Talents",
     noDetails: "Aucun détail disponible pour cette carte.",
+    tiltPhone: "Incliner avec le téléphone",
+    tiltPhoneActive: "Gyroscope activé",
   },
   pokemon: {
     sectionTitle: "Fiche Pokémon",
