@@ -53,11 +53,15 @@ export function BottomSheet({ open, title, onClose, children }: BottomSheetProps
             type="button"
             onClick={onClose}
             aria-label="Fermer"
-            className="flex h-9 w-9 items-center justify-center rounded-standard text-ink-muted hover:bg-surface-2 hover:text-ink"
+            className="flex h-9 w-9 items-center justify-center rounded-control text-ink-muted hover:bg-surface-2 hover:text-ink"
           >
             <X className="h-5 w-5" aria-hidden="true" />
           </button>
         </div>
+        <div
+          aria-hidden="true"
+          className="mb-4 h-px bg-gradient-to-r from-accent/70 via-brand-2/40 to-transparent"
+        />
         {children}
       </div>
     </div>

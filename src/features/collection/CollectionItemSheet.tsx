@@ -2,6 +2,7 @@ import { Minus, Plus, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { BottomSheet } from "../../components/BottomSheet";
 import { CardImage } from "../../components/CardImage";
+import { Button, buttonStyles } from "../../components/ui/Button";
 import {
   removeFromCollection,
   setCondition,
@@ -20,6 +21,7 @@ interface CollectionItemSheetProps {
 /**
  * Feuille d'édition d'une carte possédée : quantité, état, valeur,
  * lien vers la fiche, suppression.
+ * Contrôles ≥ 44 px et visuels de la galerie (docs/DESIGN.md §4.4).
  */
 export function CollectionItemSheet({ item, onClose }: CollectionItemSheetProps) {
   if (!item) return null;
@@ -38,7 +40,7 @@ export function CollectionItemSheet({ item, onClose }: CollectionItemSheetProps)
             {item.snapshot.localId ? ` · n° ${item.snapshot.localId}` : ""}
             {item.snapshot.rarity ? ` · ${item.snapshot.rarity}` : ""}
           </p>
-          <p className="mt-2 text-sm">
+          <p className="tabular mt-2 text-lg font-semibold text-gold">
             {price ? formatEur(price.eur) : t.collection.priceUnavailable}
           </p>
           <p className="text-xs text-ink-muted">
@@ -48,7 +50,7 @@ export function CollectionItemSheet({ item, onClose }: CollectionItemSheetProps)
       </div>
 
       {/* Quantité */}
-      <div className="mt-4 flex items-center justify-between rounded-standard border border-line p-3">
+      <div className="mt-4 flex items-center justify-between rounded-control border border-line/70 bg-glass p-3">
         <span className="text-sm">{t.collection.quantity}</span>
         <div className="flex items-center gap-3">
           <button
@@ -56,16 +58,16 @@ export function CollectionItemSheet({ item, onClose }: CollectionItemSheetProps)
             aria-label="-1"
             disabled={item.quantity <= 1}
             onClick={() => void setQuantity(item.id, item.quantity - 1)}
-            className="flex h-9 w-9 items-center justify-center rounded-standard border border-line disabled:opacity-40"
+            className="flex h-11 w-11 items-center justify-center rounded-control border border-line/70 bg-surface transition-colors hover:bg-surface-2 disabled:opacity-40"
           >
             <Minus className="h-4 w-4" aria-hidden="true" />
           </button>
-          <span className="w-6 text-center font-medium">{item.quantity}</span>
+          <span className="tabular w-6 text-center font-semibold">{item.quantity}</span>
           <button
             type="button"
             aria-label="+1"
             onClick={() => void setQuantity(item.id, item.quantity + 1)}
-            className="flex h-9 w-9 items-center justify-center rounded-standard border border-line"
+            className="flex h-11 w-11 items-center justify-center rounded-control border border-line/70 bg-surface transition-colors hover:bg-surface-2"
           >
             <Plus className="h-4 w-4" aria-hidden="true" />
           </button>
@@ -80,7 +82,7 @@ export function CollectionItemSheet({ item, onClose }: CollectionItemSheetProps)
         id="item-condition"
         value={item.condition}
         onChange={(e) => void setCondition(item.id, e.target.value as CollectionItem["condition"])}
-        className="mt-1 h-11 w-full rounded-standard border border-line bg-surface px-3 text-sm"
+        className="mt-1 h-11 w-full rounded-control border border-line/70 bg-surface px-3 text-sm focus:border-accent/60 focus:outline-none"
       >
         {CARD_CONDITIONS.map((condition) => (
           <option key={condition} value={condition}>
@@ -94,18 +96,17 @@ export function CollectionItemSheet({ item, onClose }: CollectionItemSheetProps)
         <Link
           to={`/carte/${encodeURIComponent(item.id)}`}
           onClick={onClose}
-          className="inline-flex h-11 items-center justify-center rounded-standard border border-line text-sm hover:bg-surface-2"
+          className={buttonStyles("secondary")}
         >
           {t.collection.openCard}
         </Link>
-        <button
-          type="button"
+        <Button
+          variant="danger"
           onClick={() => void removeFromCollection(item.id).then(onClose)}
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-standard border border-line text-sm text-ink-muted hover:bg-surface-2 hover:text-ink"
         >
           <Trash2 className="h-4 w-4" aria-hidden="true" />
           {t.collection.remove}
-        </button>
+        </Button>
       </div>
     </BottomSheet>
   );

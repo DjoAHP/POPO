@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { BookmarkMinus, Library } from "lucide-react";
 import { BottomSheet } from "../../components/BottomSheet";
 import { CardImage } from "../../components/CardImage";
+import { Button, buttonStyles } from "../../components/ui/Button";
 import { moveWishlistItemToCollection } from "../../db/collection";
 import { removeFromWishlist } from "../../db/wishlist";
 import type { WishlistItem } from "../../db/schema";
@@ -30,7 +31,7 @@ export function WishlistItemSheet({ item, onClose }: WishlistItemSheetProps) {
             {item.snapshot.localId ? ` · n° ${item.snapshot.localId}` : ""}
             {item.snapshot.rarity ? ` · ${item.snapshot.rarity}` : ""}
           </p>
-          <p className="mt-2 text-sm">
+          <p className="tabular mt-2 text-lg font-semibold text-brand-2">
             {item.snapshot.price
               ? formatEur(item.snapshot.price.eur)
               : t.collection.priceUnavailable}
@@ -39,29 +40,24 @@ export function WishlistItemSheet({ item, onClose }: WishlistItemSheetProps) {
       </div>
 
       <div className="mt-4 grid gap-2">
-        <button
-          type="button"
-          onClick={() => void moveWishlistItemToCollection(item.id).then(onClose)}
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-standard bg-accent text-sm font-medium text-accent-ink hover:opacity-90"
-        >
+        <Button onClick={() => void moveWishlistItemToCollection(item.id).then(onClose)}>
           <Library className="h-4 w-4" aria-hidden="true" />
           {t.wishlist.moveToCollection}
-        </button>
+        </Button>
         <Link
           to={`/carte/${encodeURIComponent(item.id)}`}
           onClick={onClose}
-          className="inline-flex h-11 items-center justify-center rounded-standard border border-line text-sm hover:bg-surface-2"
+          className={buttonStyles("secondary")}
         >
           {t.wishlist.openCard}
         </Link>
-        <button
-          type="button"
+        <Button
+          variant="danger"
           onClick={() => void removeFromWishlist(item.id).then(onClose)}
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-standard border border-line text-sm text-ink-muted hover:bg-surface-2 hover:text-ink"
         >
           <BookmarkMinus className="h-4 w-4" aria-hidden="true" />
           {t.wishlist.remove}
-        </button>
+        </Button>
       </div>
     </BottomSheet>
   );
