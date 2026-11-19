@@ -1,58 +1,86 @@
 @import "tailwindcss";
 
 /* ============================================================
-   Jetons de design — section 6 de la spec.
-   Toutes les couleurs passent par ces variables : aucune couleur
-   écrite en dur dans les composants.
-
-   Thème sombre (défaut) :
-   - fond bleu nuit très sombre, surfaces un cran plus claires
-   - accent cyan
-   Thème clair : dérivé de la même teinte (bleu léger).
+   Jetons de design — docs/DESIGN.md §1.
+   Seul endroit où changer la palette de POPO.
    ============================================================ */
 
 :root {
   color-scheme: dark;
 
-  --bg: hsl(222 25% 7%); /* fond de l'app */
-  --surface: hsl(220 22% 11%); /* cartes UI, panneaux */
-  --surface-2: hsl(220 20% 15%); /* surfaces "surélevées" (hover, pastilles) */
-  --line: hsl(220 15% 22%); /* bordures */
-  --ink: hsl(220 25% 96%); /* texte principal, blanc cassé */
-  --ink-muted: hsl(220 12% 65%); /* texte secondaire, gris bleuté */
-  --accent: hsl(198 60% 35%); /* cyan */
-  --accent-ink: hsl(198 40% 95%); /* texte posé sur l'accent */
-  --ring: hsl(198 60% 45%); /* focus visible */
+  --bg: hsl(230 32% 7%);
+  --surface: hsl(230 24% 11%);
+  --surface-2: hsl(230 22% 16%);
+  --glass: hsl(225 40% 96% / 0.05);
+  --line: hsl(230 18% 24%);
+  --ink: hsl(225 30% 96%);
+  --ink-muted: hsl(225 14% 68%);
+  --accent: hsl(188 92% 52%);
+  --accent-ink: hsl(230 40% 8%);
+  --on-brand: hsl(0 0% 100%);
+  --brand-2: hsl(265 85% 65%);
+  --gold: hsl(42 95% 60%);
+  --success: hsl(158 70% 48%);
+  --danger: hsl(345 80% 62%);
+  --ring: hsl(188 92% 60%);
+  --glow-1: hsl(188 92% 55%);
+  --glow-2: hsl(265 85% 65%);
 }
 
 [data-theme="light"] {
   color-scheme: light;
 
-  --bg: hsl(220 20% 97%);
+  --bg: hsl(225 30% 97%);
   --surface: hsl(0 0% 100%);
-  --surface-2: hsl(220 20% 93%);
-  --line: hsl(220 15% 86%);
-  --ink: hsl(222 30% 12%);
-  --ink-muted: hsl(220 10% 42%);
-  --accent: hsl(198 65% 30%); /* cyan plus profond, lisible sur fond clair */
+  --surface-2: hsl(225 20% 94%);
+  --glass: hsl(225 40% 20% / 0.04);
+  --line: hsl(225 18% 87%);
+  --ink: hsl(230 35% 12%);
+  --ink-muted: hsl(225 12% 42%);
+  --accent: hsl(192 85% 36%);
   --accent-ink: hsl(0 0% 100%);
-  --ring: hsl(198 65% 38%);
+  --on-brand: hsl(0 0% 100%);
+  --brand-2: hsl(265 70% 48%);
+  --gold: hsl(38 85% 42%);
+  --success: hsl(158 65% 32%);
+  --danger: hsl(345 75% 45%);
+  --ring: hsl(192 85% 42%);
+  --glow-1: hsl(192 85% 45%);
+  --glow-2: hsl(265 70% 55%);
 }
 
-/* Branchage des variables sur Tailwind v4 : permet d'écrire
-   bg-bg, bg-surface, border-line, text-ink, text-accent, etc. */
+/* Mapping Tailwind v4 : bg-bg, bg-surface, text-ink, from-accent, etc. */
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
+  --color-glass: var(--glass);
   --color-line: var(--line);
   --color-ink: var(--ink);
   --color-ink-muted: var(--ink-muted);
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
+  --color-on-brand: var(--on-brand);
+  --color-brand-2: var(--brand-2);
+  --color-gold: var(--gold);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
 
-  /* Rayon standard des coins : 8 px (section 6) */
-  --radius-standard: 8px;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Outfit Variable", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Jetons statiques (rayons, ombres) */
+@theme {
+  --radius-standard: 8px; /* conservé pour la migration, supprimé au lot 3 */
+  --radius-card: 16px;
+  --radius-control: 12px;
+  --radius-pill: 9999px;
+
+  --shadow-soft: 0 12px 32px -12px hsl(230 60% 2% / 0.55);
+  --shadow-float: 0 20px 48px -20px hsl(230 60% 2% / 0.7);
+  --glow-brand: 0 0 32px -6px hsl(188 92% 52% / 0.45);
 }
 
 @layer base {
@@ -62,9 +90,17 @@
 
   body {
     @apply bg-bg text-ink antialiased;
-    font-family:
-      ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-      sans-serif;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+  }
+
+  /* Chiffres stables pour les prix */
+  .tabular {
+    font-variant-numeric: tabular-nums;
   }
 
   /* Focus visible partout, discret mais net */
@@ -82,6 +118,55 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Carte de grille + reflet irisé CSS (aucun JS) */
+  .card-tile {
+    @apply relative transition-transform duration-200;
+  }
+
+  .card-tile-media {
+    @apply relative overflow-hidden rounded-card bg-surface-2;
+  }
+
+  .card-sheen {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(
+      115deg,
+      transparent 25%,
+      hsl(188 92% 70% / 0.3) 40%,
+      hsl(265 85% 75% / 0.3) 52%,
+      hsl(42 95% 65% / 0.26) 64%,
+      transparent 80%
+    );
+    background-size: 220% 100%;
+    background-position: 120% 0;
+    mix-blend-mode: screen;
+    transition: opacity 0.3s ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .card-tile:hover {
+      transform: translateY(-3px);
+    }
+    .card-tile[data-holo="true"]:hover .card-sheen {
+      opacity: 1;
+      animation: card-sheen 1.6s ease forwards;
+    }
+  }
+
+  @keyframes card-sheen {
+    from {
+      background-position: 140% 0;
+    }
+    to {
+      background-position: -40% 0;
     }
   }
 }
