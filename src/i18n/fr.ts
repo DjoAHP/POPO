@@ -23,6 +23,9 @@ export const fr = {
   theme: {
     toLight: "Passer en thème clair",
     toDark: "Passer en thème sombre",
+    dark: "Sombre",
+    light: "Clair",
+    active: "Thème actif",
   },
   home: {
     eyebrow: "Tableau de bord",
@@ -199,6 +202,8 @@ export const fr = {
     title: "Sets",
     description: "Les extensions Pokémon et ta progression dans chacune.",
     searchPlaceholder: "Rechercher un set…",
+    searchEmptyTitle: "Aucun set trouvé",
+    searchEmptyText: "Essaie un autre nom d'extension.",
     emptyTitle: "Aucun set",
     emptyText: "La liste des extensions arrivera à la phase 4.",
     detailTitle: "Set",
