@@ -47,47 +47,53 @@ dégradés de l'effet holographique définis dans `src/config/holographic.ts`.
 
 ### 1.1 Palette — thème sombre (défaut)
 
+Direction validée par le client : **noir et rouge dominants, cyan et or pour
+le reste.**
+
 | Jeton | Valeur | Usage |
 |---|---|---|
-| `--bg` | `hsl(230 32% 7%)` | fond de l'app |
-| `--surface` | `hsl(230 24% 11%)` | cartes UI, panneaux |
-| `--surface-2` | `hsl(230 22% 16%)` | surfaces élevées, survol |
-| `--glass` | `hsl(225 40% 96% / 0.05)` | surfaces en verre |
-| `--line` | `hsl(230 18% 24%)` | bordures |
-| `--ink` | `hsl(225 30% 96%)` | texte principal |
-| `--ink-muted` | `hsl(225 14% 68%)` | texte secondaire |
-| `--accent` | `hsl(188 92% 52%)` | marque 1 (cyan électrique) |
-| `--accent-ink` | `hsl(230 40% 8%)` | texte sur accent |
-| `--brand-2` | `hsl(265 85% 65%)` | marque 2 (violet) |
+| `--bg` | `hsl(0 0% 5%)` | fond de l'app (noir) |
+| `--surface` | `hsl(0 8% 9%)` | cartes UI, panneaux |
+| `--surface-2` | `hsl(0 6% 14%)` | surfaces élevées, survol |
+| `--glass` | `hsl(0 0% 100% / 0.05)` | surfaces en verre |
+| `--line` | `hsl(0 5% 22%)` | bordures |
+| `--ink` | `hsl(0 0% 97%)` | texte principal |
+| `--ink-muted` | `hsl(0 4% 68%)` | texte secondaire |
+| `--accent` | `hsl(357 80% 51%)` | marque 1 (rouge dominant) |
+| `--accent-ink` | `hsl(0 0% 100%)` | texte sur accent |
+| `--brand-2` | `hsl(348 80% 36%)` | marque 2 (cramoisi profond, fin de dégradé) |
+| `--cyan` | `hsl(188 92% 56%)` | accents secondaires, eyebrows, liens, focus |
 | `--gold` | `hsl(42 95% 60%)` | prix, valeur de collection |
 | `--success` | `hsl(158 70% 48%)` | positif, écart favorable |
 | `--danger` | `hsl(345 80% 62%)` | négatif, suppression |
-| `--ring` | `hsl(188 92% 60%)` | focus visible |
-| `--glow-1` | `hsl(188 92% 55%)` | halo de fond cyan |
-| `--glow-2` | `hsl(265 85% 65%)` | halo de fond violet |
+| `--ring` | `hsl(188 92% 60%)` | focus visible (cyan) |
+| `--glow-1` | `hsl(357 85% 52%)` | halo de fond rouge |
+| `--glow-2` | `hsl(188 92% 55%)` | halo de fond cyan |
 
 ### 1.2 Palette — thème clair
 
 | Jeton | Valeur |
 |---|---|
-| `--bg` | `hsl(225 30% 97%)` |
+| `--bg` | `hsl(0 25% 98%)` |
 | `--surface` | `hsl(0 0% 100%)` |
-| `--surface-2` | `hsl(225 20% 94%)` |
-| `--glass` | `hsl(225 40% 20% / 0.04)` |
-| `--line` | `hsl(225 18% 87%)` |
-| `--ink` | `hsl(230 35% 12%)` |
-| `--ink-muted` | `hsl(225 12% 42%)` |
-| `--accent` | `hsl(192 85% 36%)` |
+| `--surface-2` | `hsl(0 15% 95%)` |
+| `--glass` | `hsl(0 20% 20% / 0.04)` |
+| `--line` | `hsl(0 12% 88%)` |
+| `--ink` | `hsl(0 5% 10%)` |
+| `--ink-muted` | `hsl(0 5% 40%)` |
+| `--accent` | `hsl(357 72% 44%)` |
 | `--accent-ink` | `hsl(0 0% 100%)` |
-| `--brand-2` | `hsl(265 70% 48%)` |
+| `--brand-2` | `hsl(348 70% 32%)` |
+| `--cyan` | `hsl(192 85% 32%)` |
 | `--gold` | `hsl(38 85% 42%)` |
 | `--success` | `hsl(158 65% 32%)` |
 | `--danger` | `hsl(345 75% 45%)` |
 | `--ring` | `hsl(192 85% 42%)` |
 
-**Contraste** : AA minimum dans les deux thèmes. Le cyan lumineux du thème
-sombre ne doit jamais servir de texte sur fond clair (utiliser `--accent` du
-thème clair).
+**Contraste** : AA minimum dans les deux thèmes. Le rouge `--accent` est une
+couleur de **remplissage** (boutons, pilules actives) qui porte du texte blanc.
+Pour du texte coloré sur fond sombre, utiliser `--cyan` ou `--gold`, jamais
+`--accent` en petit corps.
 
 ### 1.3 Remplacer la palette plus tard
 
@@ -121,24 +127,22 @@ fonctionner hors ligne et éviter tout appel à Google Fonts.
 | `--radius-pill` | `9999px` | badges, pastilles, onglets |
 | `--shadow-soft` | `0 12px 32px -12px hsl(230 60% 2% / 0.55)` | élévation douce |
 | `--shadow-float` | `0 20px 48px -20px hsl(230 60% 2% / 0.7)` | header, barre flottante |
-| `--glow-brand` | `0 0 32px -6px hsl(188 92% 52% / 0.45)` | boutons et états actifs |
+| `--glow-brand` | `0 0 32px -6px hsl(357 80% 51% / 0.5)` | boutons et états actifs |
 
 - Ombres **colorées et diffuses**, jamais de gros bloc noir.
 - Les éléments interactifs importants peuvent porter un `box-shadow` teinté
-  (cyan ou violet), jamais les deux à la fois sur le même élément.
+  (rouge, cyan ou or), jamais plus d'une teinte à la fois sur le même élément.
 - Rayons : `rounded-card`, `rounded-control`, `rounded-pill` (Tailwind v4 les
   génère depuis `--radius-*`).
-- **Migration** : `--radius-standard: 8px` est conservé pendant la transition
-  pour les composants pas encore refondus, puis supprimé au lot 3. Les
-  nouveaux composants n'utilisent que `rounded-card`, `rounded-control` et
-  `rounded-pill`.
+- Tous les composants utilisent `rounded-card`, `rounded-control` et
+  `rounded-pill` ; il n'existe plus de rayon de transition.
 
 ### 1.6 Fond de l'application
 
 Composant `BrandBackground` (dans `AppShell`, `fixed inset-0 -z-10`,
 `pointer-events-none`) :
 
-- deux halos radiaux très diffus : cyan en haut à gauche, violet en bas à
+- deux halos radiaux très diffus : rouge en haut à gauche, cyan en bas à
   droite, opacité 8–12 % ;
 - une trame de points quasi invisible (CSS pur, pas d'image) ;
 - aucune animation (coût GPU nul pendant le défilement).
@@ -159,17 +163,17 @@ MOBILE
 [⬤ POPO]                                                ☾  ⚙
 ```
 
-- **Identité** : logo dans une pastille 40×40, dégradé cyan → violet, logo en
-  blanc. À côté, « POPO » en Outfit 700, `letter-spacing: 0.04em`. Sous-titre
+- **Identité** : logo dans une pastille 40×40, dégradé rouge → cramoisi, logo
+  en blanc. À côté, « POPO » en Outfit 700, `letter-spacing: 0.04em`. Sous-titre
   « Collection Pokémon » visible à partir de `sm`. Le bloc entier est un lien
   vers `/`.
 - **Navigation desktop** (`lg+`) : les 5 liens en pilules. Actif = fond en
-  verre teinté (`--glass` + dégradé cyan/violet à 12 %), texte clair,
+  verre teinté (`--glass` + dégradé rouge/cramoisi à 12 %), texte clair,
   soulignement dégradé 2 px. Survol = texte clair + fond très léger.
 - **Actions** : bouton thème et bouton réglages, rondelles de verre 44×44,
   visibles sur **toutes** les tailles.
 - **Fond** : `bg-surface/70`, `backdrop-blur-xl`, bordure basse `line/60`, et
-  un **fil dégradé cyan → violet de 1 px** en bas (signature POPO).
+  un **fil dégradé rouge → cramoisi de 1 px** en bas (signature POPO).
 - La barre latérale fine desktop est **supprimée**.
 
 ### 2.2 Barre d'onglets mobile (`src/components/BottomNav.tsx`)
@@ -179,7 +183,7 @@ Remplace `TabBar`. Barre **flottante** :
 - `fixed`, 8 px des bords, `bottom: calc(0.75rem + env(safe-area-inset-bottom))`,
   coins `--radius-card`, verre dépoli, `--shadow-float` ;
 - 5 onglets, hauteur ≥ 56 px ;
-- onglet actif : icône dans une pastille dégradée cyan → violet, libellé clair ;
+- onglet actif : icône dans une pastille dégradée rouge → cramoisi, libellé clair ;
 - inactif : gris bleuté ;
 - masquée à partir de `lg` (la nav est dans le header).
 
@@ -234,7 +238,7 @@ composants visuels ; props typées ; pas de `any`.
 
 ### 4.1 Accueil — la vitrine
 
-1. **Hero** : panneau `Surface` avec dégradé cyan/violet très léger et halo.
+1. **Hero** : panneau `Surface` avec dégradé rouge/cramoisi très léger et halo.
    Logo, tagline, puis **valeur de collection en très grand** (or, chiffres
    tabulaires) et nombre de cartes.
 2. **Recherche rapide** dans le hero : champ + bouton ; validation →
@@ -262,7 +266,7 @@ composants visuels ; props typées ; pas de `any`.
 - Mobile : carte centrée avec halo, puis titre, prix, actions.
 - **Prix** : deux cartes en verre, montant en gros, devise d'origine, écart
   avec flèche et couleur (`success` / `danger`).
-- **Actions** : bouton principal en dégradé cyan → violet, secondaire en verre.
+- **Actions** : bouton principal en dégradé rouge → cramoisi, secondaire en verre.
 - **Détails** : panneau en verre, lignes aérées.
 - **Attaques** : coûts d'énergie en pastilles colorées par type.
 - **Pokémon** : badges de types colorés, stats en barres, évolutions en
@@ -276,7 +280,7 @@ composants visuels ; props typées ; pas de `any`.
 - **Tri en pilules** (`SegmentedControl`) : Ajout récent / Nom / Valeur.
 - Grille identique à la Recherche ; badges quantité (dégradé), état, prix.
 - `Sheet` d'édition repolissée : poignée, en-tête dégradé, contrôles ≥ 44 px.
-- Wishlist : même structure, accent violet.
+- Wishlist : même structure, accent cyan.
 
 ### 4.5 Sets — la progression
 
@@ -343,7 +347,7 @@ Structure cible :
 ### 5.3 Couches de l'effet
 
 1. **Image** de la carte.
-2. **Feuille iridescente** : dégradé multicolore (cyan → magenta → or → vert)
+2. **Feuille iridescente** : dégradé multicolore (cyan → or → rouge → blanc)
    en `mix-blend-mode`, orientation et intensité pilotées par la position du
    pointeur/du doigt (`--holo-x`, `--holo-y`).
 3. **Reflet** : tache blanche douce qui suit le pointeur.
@@ -363,9 +367,9 @@ export interface HoloTheme {
 ```
 
 - `standard` : aucune iridescence (inclinaison très légère possible).
-- `holo` : cyan / violet / blanc.
-- `ultra` : or / rose / ambre.
-- `shiny` : argent / arc-en-ciel.
+- `holo` : cyan / or / blanc glacé.
+- `ultra` : or / rouge / cyan.
+- `shiny` : argent / cyan / or.
 - Le mapping rareté → thème reste dans ce fichier, seul endroit à modifier.
 
 ### 5.5 Comportement mobile

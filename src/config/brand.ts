@@ -50,8 +50,8 @@ export function rarityColor(rarity: string | undefined): string {
   if (!rarity) return "hsl(220 12% 60%)";
   const r = rarity.toLowerCase();
   if (r.includes("hyper") || r.includes("magnifique")) return "hsl(42 95% 60%)";
-  if (r.includes("ultra") || r.includes("illustration")) return "hsl(265 85% 68%)";
+  if (r.includes("ultra") || r.includes("illustration")) return "hsl(357 85% 62%)";
   if (r.includes("shiny") || r.includes("chromatique")) return "hsl(188 92% 62%)";
-  if (r.includes("holo") || r.includes("rare")) return "hsl(198 85% 60%)";
+  if (r.includes("holo") || r.includes("rare")) return "hsl(42 90% 62%)";
   return "hsl(220 12% 60%)";
 }

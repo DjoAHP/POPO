@@ -123,7 +123,7 @@ export default function SettingsPage() {
             icon={Heart}
             label={t.settings.dataWishlist}
             value={wishlist?.length ?? 0}
-            tone="brand2"
+            tone="cyan"
           />
         </div>
       </SettingsSection>
@@ -259,12 +259,13 @@ function ThemePreview({
       <span className={`theme-preview theme-preview-${value}`} aria-hidden="true">
         <span className="theme-preview-bar theme-preview-bar-brand" />
         <span className="theme-preview-bar theme-preview-bar-muted" />
+        <span className="theme-preview-bar theme-preview-bar-cyan" />
         <span className="theme-preview-bar theme-preview-bar-accent" />
       </span>
       <span className="mt-2 flex items-center justify-between px-1">
         <span className="text-xs font-medium">{label}</span>
         {active && (
-          <span className="text-[10px] font-semibold uppercase tracking-wide text-accent">
+          <span className="text-[10px] font-semibold uppercase tracking-wide text-cyan">
             {t.theme.active}
           </span>
         )}

@@ -31,7 +31,7 @@ export function WishlistItemSheet({ item, onClose }: WishlistItemSheetProps) {
             {item.snapshot.localId ? ` · n° ${item.snapshot.localId}` : ""}
             {item.snapshot.rarity ? ` · ${item.snapshot.rarity}` : ""}
           </p>
-          <p className="tabular mt-2 text-lg font-semibold text-brand-2">
+          <p className="tabular mt-2 text-lg font-semibold text-cyan">
             {item.snapshot.price
               ? formatEur(item.snapshot.price.eur)
               : t.collection.priceUnavailable}

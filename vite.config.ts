@@ -31,8 +31,8 @@ export default defineConfig({
         scope: "/",
         display: "standalone",
         orientation: "portrait",
-        theme_color: "#0e131d",
-        background_color: "#0e131d",
+        theme_color: "#0d0d0d",
+        background_color: "#0d0d0d",
         categories: ["entertainment", "utilities"],
         screenshots: [],
         shortcuts: [
@@ -98,3 +98,5 @@ export default defineConfig({
     }),
   ],
 });
+
+

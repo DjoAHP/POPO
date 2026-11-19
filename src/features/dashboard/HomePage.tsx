@@ -175,7 +175,7 @@ function DashboardContent({
               type="search"
               placeholder={t.home.quickSearchPlaceholder}
               aria-label={t.home.quickSearchPlaceholder}
-              className="h-11 min-w-0 flex-1 rounded-control border border-line/70 bg-glass px-3 text-sm outline-none backdrop-blur transition-shadow placeholder:text-ink-muted focus:border-accent/60 focus:shadow-[var(--glow-brand)]"
+              className="h-11 min-w-0 flex-1 rounded-control border border-line/70 bg-glass px-3 text-sm outline-none backdrop-blur transition-shadow placeholder:text-ink-muted focus:border-cyan/60 focus:shadow-[var(--glow-brand)]"
             />
             <Button type="submit">{t.home.quickSearchButton}</Button>
           </form>
@@ -196,7 +196,7 @@ function DashboardContent({
           label={t.home.setsLabel}
           value={<AnimatedIntCounter value={setCount} />}
           hint={t.home.setsHint}
-          tone="brand2"
+          tone="cyan"
         />
       </div>
 
@@ -207,7 +207,7 @@ function DashboardContent({
             <h2 className="text-lg font-semibold">{t.home.recentTitle}</h2>
             <Link
               to="/collection"
-              className="flex items-center gap-1 text-xs text-accent hover:underline"
+              className="flex items-center gap-1 text-xs text-cyan hover:underline"
             >
               {t.home.seeAll}
               <ChevronRight className="h-3 w-3" aria-hidden="true" />
@@ -287,7 +287,7 @@ function SetsProgressSection() {
         <h2 className="text-lg font-semibold">{t.home.setsTitle}</h2>
         <Link
           to="/sets"
-          className="flex items-center gap-1 text-xs text-accent hover:underline"
+          className="flex items-center gap-1 text-xs text-cyan hover:underline"
         >
           {t.home.seeAll}
           <ChevronRight className="h-3 w-3" aria-hidden="true" />
@@ -308,7 +308,7 @@ function SetsProgressSection() {
                   </p>
                 </div>
                 {pct !== null && (
-                  <p className="tabular shrink-0 text-sm font-semibold text-accent">{pct} %</p>
+                  <p className="tabular shrink-0 text-sm font-semibold text-cyan">{pct} %</p>
                 )}
               </div>
               {pct !== null && (

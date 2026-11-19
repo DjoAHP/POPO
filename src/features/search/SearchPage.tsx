@@ -89,7 +89,7 @@ export default function SearchPage() {
           onChange={(e) => setNameInput(e.target.value)}
           placeholder={t.search.placeholder}
           aria-label={t.search.title}
-          className="h-14 w-full rounded-pill border border-line/70 bg-glass pl-12 pr-4 text-base shadow-[var(--shadow-soft)] outline-none backdrop-blur transition-shadow placeholder:text-ink-muted focus:border-accent/60 focus:shadow-[var(--glow-brand)]"
+          className="h-14 w-full rounded-pill border border-line/70 bg-glass pl-12 pr-4 text-base shadow-[var(--shadow-soft)] outline-none backdrop-blur transition-shadow placeholder:text-ink-muted focus:border-cyan/60 focus:shadow-[var(--glow-brand)]"
         />
       </div>
 
@@ -104,7 +104,7 @@ export default function SearchPage() {
       >
         <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
         {t.search.filtersButton}
-        {activeFilterCount > 0 && <Badge tone="accent">{activeFilterCount}</Badge>}
+        {activeFilterCount > 0 && <Badge tone="cyan">{activeFilterCount}</Badge>}
       </button>
 
       <BottomSheet

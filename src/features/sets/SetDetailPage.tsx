@@ -124,7 +124,7 @@ export default function SetDetailPage() {
             />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-accent">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-cyan">
               {t.sets.eyebrow}
             </p>
             <h1 className="mt-0.5 text-xl font-semibold tracking-tight sm:text-2xl">
@@ -133,7 +133,7 @@ export default function SetDetailPage() {
             <p className="text-sm text-ink-muted">{t.sets.progress(ownedCount, total)}</p>
           </div>
           <div className="w-full sm:w-40">
-            <p className="tabular text-right text-sm font-semibold text-accent">
+            <p className="tabular text-right text-sm font-semibold text-cyan">
               {t.sets.progressPercent(pct)}
             </p>
             <div className="mt-1 h-2 overflow-hidden rounded-pill bg-surface-2">

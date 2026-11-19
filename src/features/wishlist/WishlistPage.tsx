@@ -42,14 +42,14 @@ export default function WishlistPage() {
         <Surface variant="gradient" className="relative mb-5 overflow-hidden p-4">
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-2 to-transparent"
+            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan to-transparent"
           />
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
               <p className="text-xs uppercase tracking-wide text-ink-muted">
                 {t.wishlist.totalValue}
               </p>
-              <p className="tabular mt-1 text-3xl font-semibold tracking-tight text-brand-2">
+              <p className="tabular mt-1 text-3xl font-semibold tracking-tight text-cyan">
                 {formatEur(value.total)}
               </p>
               <p className="mt-1 text-xs text-ink-muted">
@@ -60,7 +60,7 @@ export default function WishlistPage() {
             </div>
             <span
               aria-hidden="true"
-              className="flex h-12 w-12 items-center justify-center rounded-control bg-brand-2/12 text-brand-2"
+              className="flex h-12 w-12 items-center justify-center rounded-control bg-cyan/12 text-cyan"
             >
               <Heart className="h-6 w-6" />
             </span>
@@ -84,7 +84,7 @@ export default function WishlistPage() {
               <button
                 type="button"
                 onClick={() => setEditingId(item.id)}
-                className="block w-full rounded-card text-left transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-2"
+                className="block w-full rounded-card text-left transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan"
               >
                 <CardTile
                   image={item.snapshot.image}

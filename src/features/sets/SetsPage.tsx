@@ -103,7 +103,7 @@ export default function SetsPage() {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder={t.sets.searchPlaceholder}
-          className="h-11 w-full rounded-control border border-line/70 bg-glass pl-9 pr-3 text-sm backdrop-blur-xl transition-colors placeholder:text-ink-muted focus:border-accent/60 focus:outline-none"
+          className="h-11 w-full rounded-control border border-line/70 bg-glass pl-9 pr-3 text-sm backdrop-blur-xl transition-colors placeholder:text-ink-muted focus:border-cyan/60 focus:outline-none"
         />
       </label>
 
@@ -138,7 +138,7 @@ export default function SetsPage() {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-baseline justify-between gap-2">
                         <p className="truncate font-medium">{set.name}</p>
-                        <span className="tabular shrink-0 text-xs font-semibold text-accent">
+                        <span className="tabular shrink-0 text-xs font-semibold text-cyan">
                           {t.sets.progressPercent(pct)}
                         </span>
                       </div>

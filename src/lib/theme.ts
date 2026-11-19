@@ -7,8 +7,8 @@ const STORAGE_KEY = "popo:theme";
 
 /** Couleur de la barre système du téléphone, synchronisée avec le thème. */
 const THEME_COLOR: Record<Theme, string> = {
-  dark: "#0c0e18",
-  light: "#f5f6f9",
+  dark: "#0d0d0d",
+  light: "#fbf9f9",
 };
 
 /** Lit le thème courant depuis l'attribut posé par le script inline de index.html. */

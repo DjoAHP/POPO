@@ -148,10 +148,10 @@ function CardDetail({
     theme.id === "standard"
       ? "neutral"
       : theme.id === "shiny"
-        ? "brand2"
+        ? "cyan"
         : theme.id === "ultra"
           ? "gold"
-          : "accent";
+          : "cyan";
 
   return (
     <article>
@@ -187,7 +187,7 @@ function CardDetail({
         </div>
 
         <div className="min-w-0">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-accent">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-cyan">
             {t.card.eyebrow}
           </p>
           <h1 className="mt-1 text-[28px] font-semibold leading-tight tracking-tight sm:text-[32px]">
@@ -195,7 +195,7 @@ function CardDetail({
           </h1>
 
           <div className="mt-3 flex flex-wrap gap-2">
-            {card.set?.name && <Badge tone="accent">{card.set.name}</Badge>}
+            {card.set?.name && <Badge tone="cyan">{card.set.name}</Badge>}
             {card.localId && <Badge>n° {card.localId}</Badge>}
             {card.rarity && <Badge tone={rarityTone}>{card.rarity}</Badge>}
           </div>

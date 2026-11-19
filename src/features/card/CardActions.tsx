@@ -70,7 +70,7 @@ export function CardActions({ card, rate }: CardActionsProps) {
 
       <AddFeedback trigger={wishlistFeedback}>
         <Button
-          variant={wishlistItem ? "brand2" : "secondary"}
+          variant={wishlistItem ? "cyan" : "secondary"}
           onClick={handleToggleWishlist}
           aria-pressed={Boolean(wishlistItem)}
           className="w-full"

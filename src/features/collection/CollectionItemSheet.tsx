@@ -82,7 +82,7 @@ export function CollectionItemSheet({ item, onClose }: CollectionItemSheetProps)
         id="item-condition"
         value={item.condition}
         onChange={(e) => void setCondition(item.id, e.target.value as CollectionItem["condition"])}
-        className="mt-1 h-11 w-full rounded-control border border-line/70 bg-surface px-3 text-sm focus:border-accent/60 focus:outline-none"
+        className="mt-1 h-11 w-full rounded-control border border-line/70 bg-surface px-3 text-sm focus:border-cyan/60 focus:outline-none"
       >
         {CARD_CONDITIONS.map((condition) => (
           <option key={condition} value={condition}>

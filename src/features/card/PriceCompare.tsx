@@ -95,7 +95,7 @@ function PriceBox({
       <p
         className={[
           "tabular mt-1 text-xl font-semibold tracking-tight sm:text-2xl",
-          main ? (tone === "gold" ? "text-gold" : "text-accent") : "text-ink-muted",
+          main ? (tone === "gold" ? "text-gold" : "text-cyan") : "text-ink-muted",
         ].join(" ")}
       >
         {main ?? t.card.priceUnavailable}

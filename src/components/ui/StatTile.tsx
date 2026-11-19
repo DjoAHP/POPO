@@ -6,13 +6,13 @@ interface StatTileProps {
   label: string;
   value: ReactNode;
   hint?: string;
-  tone?: "accent" | "gold" | "brand2";
+  tone?: "accent" | "gold" | "cyan";
 }
 
 const tones = {
   accent: "bg-accent/12 text-accent",
   gold: "bg-gold/12 text-gold",
-  brand2: "bg-brand-2/12 text-brand-2",
+  cyan: "bg-cyan/12 text-cyan",
 };
 
 /** Tuile statistique (Accueil, Réglages). */

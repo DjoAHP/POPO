@@ -1,11 +1,17 @@
 import type { ReactNode } from "react";
 
-export type BadgeTone = "neutral" | "accent" | "brand2" | "gold" | "success" | "danger";
+export type BadgeTone =
+  | "neutral"
+  | "accent"
+  | "cyan"
+  | "gold"
+  | "success"
+  | "danger";
 
 const tones: Record<BadgeTone, string> = {
   neutral: "border-line/70 bg-surface-2 text-ink-muted",
   accent: "border-accent/30 bg-accent/10 text-accent",
-  brand2: "border-brand-2/30 bg-brand-2/10 text-brand-2",
+  cyan: "border-cyan/30 bg-cyan/10 text-cyan",
   gold: "border-gold/30 bg-gold/10 text-gold",
   success: "border-success/30 bg-success/10 text-success",
   danger: "border-danger/30 bg-danger/10 text-danger",

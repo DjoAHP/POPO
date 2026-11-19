@@ -126,9 +126,9 @@ export function isHolographicRarity(rarity: string | undefined): boolean {
 /**
  * Thème holographique d'une carte (docs/DESIGN.md §5.4).
  * - `standard` : aucune iridescence, inclinaison très légère ;
- * - `holo` : cyan / violet / blanc ;
- * - `ultra` : or / rose / ambre ;
- * - `shiny` : argent / arc-en-ciel.
+ * - `holo` : cyan / or / blanc glacé ;
+ * - `ultra` : or / rouge / cyan ;
+ * - `shiny` : argent / cyan / or.
  */
 export interface HoloTheme {
   id: "standard" | "holo" | "ultra" | "shiny";
@@ -144,24 +144,24 @@ export const HOLO_THEMES: Record<HoloTheme["id"], HoloTheme> = {
   standard: {
     id: "standard",
     foil: ["transparent", "transparent", "transparent"],
-    glow: "hsl(220 12% 60% / 0.22)",
+    glow: "hsl(0 0% 60% / 0.22)",
     intensity: 0,
   },
   holo: {
     id: "holo",
-    foil: ["hsl(188 92% 68%)", "hsl(265 85% 74%)", "hsl(210 90% 88%)"],
+    foil: ["hsl(188 92% 68%)", "hsl(42 95% 64%)", "hsl(195 90% 88%)"],
     glow: "hsl(188 92% 55% / 0.45)",
     intensity: 0.6,
   },
   ultra: {
     id: "ultra",
-    foil: ["hsl(42 95% 64%)", "hsl(335 85% 70%)", "hsl(265 85% 74%)"],
+    foil: ["hsl(42 95% 64%)", "hsl(357 85% 62%)", "hsl(188 92% 68%)"],
     glow: "hsl(42 95% 60% / 0.5)",
     intensity: 0.72,
   },
   shiny: {
     id: "shiny",
-    foil: ["hsl(0 0% 96%)", "hsl(188 92% 78%)", "hsl(265 85% 82%)"],
+    foil: ["hsl(0 0% 96%)", "hsl(188 92% 78%)", "hsl(42 95% 70%)"],
     glow: "hsl(0 0% 90% / 0.42)",
     intensity: 0.66,
   },

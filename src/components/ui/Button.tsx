@@ -5,7 +5,7 @@ export type ButtonVariant =
   | "secondary"
   | "ghost"
   | "success"
-  | "brand2"
+  | "cyan"
   | "danger";
 export type ButtonSize = "sm" | "md" | "lg";
 
@@ -24,7 +24,7 @@ const variants: Record<ButtonVariant, string> = {
   secondary: "border border-line/70 bg-glass text-ink backdrop-blur hover:bg-surface-2",
   ghost: "text-ink-muted hover:bg-glass hover:text-ink",
   success: "border border-success/40 bg-success/10 text-success hover:bg-success/15",
-  brand2: "border border-brand-2/40 bg-brand-2/10 text-brand-2 hover:bg-brand-2/15",
+  cyan: "border border-cyan/40 bg-cyan/10 text-cyan hover:bg-cyan/15",
   danger: "border border-danger/40 bg-danger/10 text-danger hover:bg-danger/15",
 };
 
